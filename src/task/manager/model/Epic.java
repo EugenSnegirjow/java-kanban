@@ -1,0 +1,42 @@
+package task.manager.model;
+
+import task.manager.service.TaskManager;
+
+import java.util.ArrayList;
+import java.util.Objects;
+
+public class Epic extends Task {
+    public ArrayList<Integer> subTaskIDs = new ArrayList<>();
+
+    public Epic(String title, String description, String status) {
+        super(title, description, status);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(subTaskIDs, epic.subTaskIDs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subTaskIDs);
+    }
+
+    @Override
+    public String toString() {
+        TaskManager taskManager = new TaskManager();
+        StringBuilder tasksList = new StringBuilder(ID + "-" + title + ":");
+        if (subTaskIDs == null){
+            tasksList.append("\n\tПодзадач нет");
+            return tasksList.toString();
+        }
+        for (Integer subTaskID : subTaskIDs) {
+            tasksList.append("\n\t").append(taskManager.subTasks.get(subTaskID));
+        }
+        return tasksList.toString();
+    }
+}
