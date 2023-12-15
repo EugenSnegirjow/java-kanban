@@ -8,8 +8,8 @@ import java.util.Objects;
 public class Epic extends Task {
     public ArrayList<Integer> subTaskIDs = new ArrayList<>();
 
-    public Epic(String title, String description, String status) {
-        super(title, description, status);
+    public Epic(String title, String description) {
+        super(title, description);
     }
 
     @Override

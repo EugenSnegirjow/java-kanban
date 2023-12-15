@@ -47,6 +47,7 @@ public class Main {
                     taskManager.update(epic);
                     break;
                 case 6:  // изменить подзадачу
+                    subTask.setStatus("DONE");
                     taskManager.update(subTask);
                     break;
                 case 7:  // удалить простую задачу
