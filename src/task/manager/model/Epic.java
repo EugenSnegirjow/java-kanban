@@ -6,10 +6,21 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
-    public ArrayList<Integer> subTaskIDs = new ArrayList<>();
+    private ArrayList<Integer> subTaskIDs;
 
     public Epic(String title, String description) {
         super(title, description);
+    }
+
+    public ArrayList<Integer> getSubTaskIDs() {
+        return subTaskIDs;
+    }
+
+    public void addSubTaskIDs(int subTaskID) {
+        subTaskIDs.add(subTaskID);
+    }
+    public void removeSubtaskID(int id){
+        subTaskIDs.remove(id);
     }
 
     @Override
@@ -18,7 +29,7 @@ public class Epic extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Epic epic = (Epic) o;
-        return Objects.equals(subTaskIDs, epic.subTaskIDs);
+        return Objects.equals(this.subTaskIDs, epic.subTaskIDs);
     }
 
     @Override

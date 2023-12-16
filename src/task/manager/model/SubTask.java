@@ -3,7 +3,7 @@ package task.manager.model;
 import java.util.Objects;
 
 public class SubTask extends Task {
-    int epicTaskID;
+    private int epicTaskID;
 
     public SubTask(String title, String description, int epicTaskID) {
         super(title, description);

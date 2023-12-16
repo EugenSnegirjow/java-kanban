@@ -4,6 +4,7 @@ import task.manager.model.Epic;
 import task.manager.model.SubTask;
 import task.manager.model.Task;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskManager {
@@ -30,36 +31,58 @@ public class TaskManager {
         taskID++;
         subTask.setID(taskID);
         subTasks.put(subTask.getID(), subTask);
-        epics.get(epic).subTaskIDs.add(subTask.getID());
-        switch (subTask.getStatus()) {
+        epics.get(epic).addSubTaskIDs(subTask.getID());
+        updateEpicStatusForCreate(epics.get(epic), subTask.getStatus());
+        return subTask.getID();
+    }
+
+    private void updateEpicStatusForCreate(Epic epic, String subTaskStatus){
+        switch (subTaskStatus) {
             case "NEW":
-                if (epics.get(epic).getStatus().equals("DONE")) {
-                    epics.get(epic).setStatus("IN_PROGRESS");
+                if (epic.getStatus().equals("DONE")) {
+                    epic.setStatus("IN_PROGRESS");
                 }
                 break;
             case "IN_PROGRESS":
-                    epics.get(epic).setStatus("IN_PROGRESS");
+                epic.setStatus("IN_PROGRESS");
                 break;
             case "DONE":
                 String status = "DONE";
-                for (Integer subTaskID : epics.get(epic).subTaskIDs) {
+                for (Integer subTaskID : epic.getSubTaskIDs()) {
                     if (!subTasks.get(subTaskID).equals(status)) {
                         status = "IN_PROGRESS";
                         break;
                     }
                 }
-                epics.get(epic).setStatus(status);
+                epic.setStatus(status);
         }
-        return subTask.getID();
+
     }
 
-    public void printAllTasks() {
-        for (Integer ID : tasks.keySet()) {
-            System.out.println(tasks.get(ID));
+    // сабтаски выводились под каждым эпиком в переопределённом методе toString
+
+    public ArrayList<Task> getAllTasks(){
+        ArrayList<Task> tasks = new ArrayList<>();
+        for (Integer task : this.tasks.keySet()) {
+            tasks.add(this.tasks.get(task));
         }
-        for (Integer ID : epics.keySet()) {
-            System.out.println(epics.get(ID));
+        return tasks;
+    }
+
+    public ArrayList<Task> getAllEpics(){
+        ArrayList<Task> tasks = new ArrayList<>();
+        for (Integer task : epics.keySet()) {
+            tasks.add(epics.get(task));
         }
+        return tasks;
+    }
+
+    public ArrayList<Task> getAllSubTasks(){
+        ArrayList<Task> tasks = new ArrayList<>();
+        for (Integer task : subTasks.keySet()) {
+            tasks.add(subTasks.get(task));
+        }
+        return tasks;
     }
 
     public void printEpicWithSubTasks(Integer taskID){
@@ -76,13 +99,14 @@ public class TaskManager {
         int epicID = subTasks.get(taskID).getEpicTaskID();
         String subTaskStatus = subTasks.get(taskID).getStatus();
         subTasks.remove(taskID);
-        if (epics.get(epicID).subTaskIDs == null){
+        epics.get(epicID).removeSubtaskID(taskID);
+        if (epics.get(epicID).getSubTaskIDs() == null){
             epics.get(epicID).setStatus("NEW");
         } else if (subTaskStatus.equals("DONE")) {
             epics.get(epicID).setStatus("DONE");
         } else {
             String status = "NEW";
-            for (Integer subTaskID : epics.get(epicID).subTaskIDs) {
+            for (Integer subTaskID : epics.get(epicID).getSubTaskIDs()) {
                 if (!subTasks.get(subTaskID).equals(status)) {
                     status = "IN_PROGRESS";
                     break;
@@ -121,7 +145,7 @@ public class TaskManager {
                 break;
             case "DONE":
                 String status = "DONE";
-                for (Integer subTaskID : epics.get(task.getEpicTaskID()).subTaskIDs) {
+                for (Integer subTaskID : epics.get(task.getEpicTaskID()).getSubTaskIDs()) {
                     if (!subTasks.get(subTaskID).equals(status)) {
                         status = "IN_PROGRESS";
                     }
