@@ -1,7 +1,7 @@
 package task.manager.service;
 
 public class Managers {
-    public HistoryManager getDefaultHistory() {
+    public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
 

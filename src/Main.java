@@ -32,7 +32,7 @@ public class Main {
             }
         }
 
-        HistoryManager historyManager = managers.getDefaultHistory();
+        HistoryManager historyManager = Managers.getDefaultHistory();
 
         ArrayList<Task> allTasks = manager.getAllTasks();
         for (Task task : allTasks) {
