@@ -1,6 +1,6 @@
 package task.manager.model;
 
-import task.manager.service.TaskManager;
+import task.manager.service.InMemoryTaskManager;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -39,14 +39,14 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        TaskManager taskManager = new TaskManager();
+        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
         StringBuilder tasksList = new StringBuilder(ID + "-" + title + ":");
         if (subTaskIDs == null){
             tasksList.append("\n\tПодзадач нет");
             return tasksList.toString();
         }
         for (Integer subTaskID : subTaskIDs) {
-            tasksList.append("\n\t").append(taskManager.subTasks.get(subTaskID));
+            tasksList.append("\n\t").append(inMemoryTaskManager.subTasks.get(subTaskID));
         }
         return tasksList.toString();
     }

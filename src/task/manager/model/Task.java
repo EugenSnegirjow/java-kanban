@@ -1,23 +1,25 @@
 package task.manager.model;
 
+import task.manager.service.Status;
+
 import java.util.Objects;
 
 public class Task {
     protected String title;
     protected String description;
     protected int ID;
-    protected String status = "NEW";
+    protected Status status = Status.NEW;
 
     public Task(String title, String description) {
         this.title = title;
         this.description = description;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

@@ -1,76 +1,59 @@
 import task.manager.model.Epic;
 import task.manager.model.SubTask;
 import task.manager.model.Task;
+import task.manager.service.HistoryManager;
+import task.manager.service.Managers;
 import task.manager.service.TaskManager;
 
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.ArrayList;
+
 
 public class Main {
     static Task task;
     static Epic epic;
     static SubTask subTask;
-    static TaskManager taskManager = new TaskManager();
-    static Scanner scanner = new Scanner(System.in);
-    static int taskID;
-    static HashMap<Integer, Task> allTasks = new HashMap<>();
+    static ArrayList<Integer> allTasksIDs = new ArrayList<>();
 
     public static void main(String[] args) {
+        Managers managers = new Managers();
+        TaskManager manager = managers.getDefault();
+        for (int i = 1; i <= 5; i++) {
+            task = new Task("Простая задача " + i, "Описание простой задачи " + i);
+            allTasksIDs.add(manager.create(task));
+        }
 
-        while (true) {
-            printMenu();
-            int choice = scanner.nextInt();
-            switch (choice) {
-                case 1:  // ввести простую задачу
-                    task.setTitle("Простая задача");
-                    task.setDescription("Описание задачи");
-                    taskID = taskManager.create(task);
-                    allTasks.put(taskID, task);
-                    break;
-                case 2:  // ввести сложную задачу
-                    epic.setTitle("Сложная задача");
-                    epic.setDescription("Описание задачи");
-                    taskManager.create(epic);
-                    taskID = taskManager.create(epic);
-                    allTasks.put(taskID, epic);
-                    break;
-                case 3:  // ввести подзадачу
-                    int epicID = 22;
-                    subTask.setTitle("Подзадача задача");
-                    subTask.setDescription("Описание задачи");
-                    taskManager.create(epicID, subTask);
-                    break;
-                case 4:  // изменить простую задачу
-                    taskManager.update(task);
-                    break;
-                case 5:  // изменить сложную задачу
-                    taskManager.update(epic);
-                    break;
-                case 6:  // изменить подзадачу
-                    subTask.setStatus("DONE");
-                    taskManager.update(subTask);
-                    break;
-                case 7:  // удалить простую задачу
-                    taskManager.removeTask(task.getID());
-                    break;
-                case 8:  // удалить сложную задачу
-                    taskManager.removeEpic(epic.getID());
-                    break;
-                case 9:  // удалить подзадачу
-                    taskManager.removeSubTask(subTask.getID());
-                    break;
-                case 10:  // удалить все задачи
-                    taskManager.removeAllTasks();
-                case 11:  // получить список всех задач
-                    taskManager.printAllTasks();
-                case 12:  // получить список подзадач эпика
-                    taskManager.printEpicWithSubTasks(subTask.getID());
-                    return;
-                default: //завершить работу
-                    break;
-
+        for (int i = 1; i <= 2; i++) {
+            epic = new Epic("Сложная задача " + i, "Описание сложной задачи " + i);
+            allTasksIDs.add(manager.create(epic));
+            for (int j = 1; j <= 2; j++) {
+                subTask = new SubTask("Подзадача " + j + " сложной задачи " + i,
+                        "Описание подзадачи " + j + " сложной задачи " + i, epic.getID());
+                allTasksIDs.add(manager.create(subTask));
             }
         }
+
+        HistoryManager historyManager = managers.getDefaultHistory();
+
+        ArrayList<Task> allTasks = manager.getAllTasks();
+        for (Task task : allTasks) {
+            historyManager.getTask(task.getID());
+        }
+
+        ArrayList<Task> allEpics = manager.getAllEpics();
+        for (Task task : allEpics) {
+            historyManager.getEpic(task.getID());
+        }
+
+        ArrayList<Task> allSubTasks = manager.getAllSubTasks();
+        for (Task task : allSubTasks) {
+            historyManager.getSubTask(task.getID());
+        }
+
+        ArrayList<Task> history = historyManager.getHistory();
+        for (Task task1 : history) {
+            System.out.println(task1.getTitle() + "\n" + task1.getDescription());
+        }
+
     }
 
     public static void printMenu() {
