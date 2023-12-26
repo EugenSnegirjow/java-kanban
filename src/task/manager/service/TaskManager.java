@@ -7,38 +7,35 @@ import task.manager.model.Task;
 import java.util.ArrayList;
 
 public interface TaskManager {
-//        Task getTask(int taskID);
-//        Epic getEpic(int taskID);
-//        SubTask getSubTask (int taskID);
 
-        int create(Task task);
+    int create(Task task);
 
-        int create(Epic task);
+    int create(Epic task);
 
-        int create(int epic, SubTask subTask);
+    int create(int epic, SubTask subTask);
 
-        ArrayList<Task> getAllTasks();
+    ArrayList<Task> getAllTasks();
 
-        ArrayList<Task> getAllEpics();
+    ArrayList<Task> getAllEpics();
 
-        ArrayList<Task> getAllSubTasks();
+    ArrayList<Task> getAllSubTasks();
 
-        ArrayList<Task> getAllSubTasksForEpic(Epic epic);
+    ArrayList<Task> getAllSubTasksForEpic(Epic epic);
 
-        void removeTask(Integer taskID);
+    void removeTask(Integer taskID);
 
-        void removeEpic(Integer taskID);
+    void removeEpic(Integer taskID);
 
-        void removeSubTask(Integer taskID);
+    void removeSubTask(Integer taskID);
 
-        void removeAllTasks();
+    void removeAllTasks();
 
-        void update(Task task);
+    void update(Task task);
 
-        void update(Epic task);
+    void update(Epic task);
 
-        void update(SubTask task);
+    void update(SubTask task);
 
 
-    }
+}
 

@@ -6,11 +6,14 @@ import task.manager.model.Task;
 
 import java.util.ArrayList;
 
-public interface HistoryManager <T extends Task> {
+public interface HistoryManager {
     Task getTask(int taskID);
-    Epic getEpic(int taskID);
-    SubTask getSubTask (int taskID);
 
-    void add(T task);
-    ArrayList<T> getHistory();
+    Epic getEpic(int taskID);
+
+    SubTask getSubTask(int taskID);
+
+    void add(Task task);
+
+    ArrayList<Task> getHistory();
 }

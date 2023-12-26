@@ -13,33 +13,6 @@ public class InMemoryTaskManager implements TaskManager {
     public static HashMap<Integer, Epic> epics = new HashMap<>();
     public static HashMap<Integer, SubTask> subTasks = new HashMap<>();
 
-
-//    @Override
-//    public Task getTask(int taskID) {
-//        updateTasksHistoryList(tasks.get(taskID));
-//        return tasks.get(taskID);
-//    }
-//
-//    @Override
-//    public Epic getEpic(int taskID) {
-//        updateTasksHistoryList(epics.get(taskID));
-//        return epics.get(taskID);
-//    }
-//
-//    @Override
-//    public SubTask getSubTask(int taskID) {
-//        updateTasksHistoryList(subTasks.get(taskID));
-//        return subTasks.get(taskID);
-//    }
-//
-//    private void updateTasksHistoryList(Task task) {
-//        if (tasksHistoryList.size() == 10) {
-//            tasksHistoryList.remove(0);
-//        }
-//        tasksHistoryList.add(task);
-//    }
-
-
     @Override
     public int create(Task task) {
         taskID++;

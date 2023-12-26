@@ -19,7 +19,8 @@ public class Epic extends Task {
     public void addSubTaskIDs(int subTaskID) {
         subTaskIDs.add(subTaskID);
     }
-    public void removeSubtaskID(int id){
+
+    public void removeSubtaskID(int id) {
         subTaskIDs.remove(id);
     }
 
@@ -39,14 +40,13 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
         StringBuilder tasksList = new StringBuilder(ID + "-" + title + ":");
-        if (subTaskIDs == null){
+        if (subTaskIDs == null) {
             tasksList.append("\n\tПодзадач нет");
             return tasksList.toString();
         }
         for (Integer subTaskID : subTaskIDs) {
-            tasksList.append("\n\t").append(inMemoryTaskManager.subTasks.get(subTaskID));
+            tasksList.append("\n\t").append(InMemoryTaskManager.subTasks.get(subTaskID));
         }
         return tasksList.toString();
     }
