@@ -6,22 +6,22 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
-    private ArrayList<Integer> subTaskIDs;
+    private ArrayList<Integer> subTaskIds;
 
     public Epic(String title, String description) {
         super(title, description);
     }
 
-    public ArrayList<Integer> getSubTaskIDs() {
-        return subTaskIDs;
+    public ArrayList<Integer> getSubTaskIds() {
+        return subTaskIds;
     }
 
-    public void addSubTaskIDs(int subTaskID) {
-        subTaskIDs.add(subTaskID);
+    public void addSubTaskIds(int subTaskID) {
+        subTaskIds.add(subTaskID);
     }
 
-    public void removeSubtaskID(int id) {
-        subTaskIDs.remove(id);
+    public void removeSubtaskId(int id) {
+        subTaskIds.remove(id);
     }
 
     @Override
@@ -30,23 +30,23 @@ public class Epic extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Epic epic = (Epic) o;
-        return Objects.equals(this.subTaskIDs, epic.subTaskIDs);
+        return Objects.equals(this.subTaskIds, epic.subTaskIds);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), subTaskIDs);
+        return Objects.hash(super.hashCode(), subTaskIds);
     }
 
     @Override
     public String toString() {
-        StringBuilder tasksList = new StringBuilder(ID + "-" + title + ":");
-        if (subTaskIDs == null) {
+        StringBuilder tasksList = new StringBuilder(id + "-" + title + ":");
+        if (subTaskIds == null) {
             tasksList.append("\n\tПодзадач нет");
             return tasksList.toString();
         }
-        for (Integer subTaskID : subTaskIDs) {
-            tasksList.append("\n\t").append(InMemoryTaskManager.subTasks.get(subTaskID));
+        for (Integer subTaskID : subTaskIds) {
+            tasksList.append("\n\t").append(InMemoryTaskManager.getSubTask(subTaskID));
         }
         return tasksList.toString();
     }

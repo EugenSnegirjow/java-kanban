@@ -3,19 +3,19 @@ package task.manager.model;
 import java.util.Objects;
 
 public class SubTask extends Task {
-    private int epicTaskID;
+    private int epicTaskId;
 
-    public SubTask(String title, String description, int epicTaskID) {
+    public SubTask(String title, String description, int epicTaskId) {
         super(title, description);
-        this.epicTaskID = epicTaskID;
+        this.epicTaskId = epicTaskId;
     }
 
-    public int getEpicTaskID() {
-        return epicTaskID;
+    public int getEpicTaskId() {
+        return epicTaskId;
     }
 
-    public void setEpicTaskID(int epicTaskID) {
-        this.epicTaskID = epicTaskID;
+    public void setEpicTaskId(int epicTaskId) {
+        this.epicTaskId = epicTaskId;
     }
 
     @Override
@@ -24,11 +24,11 @@ public class SubTask extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         SubTask subTask = (SubTask) o;
-        return epicTaskID == subTask.epicTaskID;
+        return epicTaskId == subTask.epicTaskId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), epicTaskID);
+        return Objects.hash(super.hashCode(), epicTaskId);
     }
 }

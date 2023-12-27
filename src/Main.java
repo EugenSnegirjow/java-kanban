@@ -27,7 +27,7 @@ public class Main {
             allTasksIDs.add(manager.create(epic));
             for (int j = 1; j <= 2; j++) {
                 subTask = new SubTask("Подзадача " + j + " сложной задачи " + i,
-                        "Описание подзадачи " + j + " сложной задачи " + i, epic.getID());
+                        "Описание подзадачи " + j + " сложной задачи " + i, epic.getId());
                 allTasksIDs.add(manager.create(subTask));
             }
         }
@@ -36,17 +36,17 @@ public class Main {
 
         ArrayList<Task> allTasks = manager.getAllTasks();
         for (Task task : allTasks) {
-            historyManager.getTask(task.getID());
+            historyManager.getTask(task.getId());
         }
 
         ArrayList<Task> allEpics = manager.getAllEpics();
         for (Task task : allEpics) {
-            historyManager.getEpic(task.getID());
+            historyManager.getEpic(task.getId());
         }
 
         ArrayList<Task> allSubTasks = manager.getAllSubTasks();
         for (Task task : allSubTasks) {
-            historyManager.getSubTask(task.getID());
+            historyManager.getSubTask(task.getId());
         }
 
         ArrayList<Task> history = historyManager.getHistory();

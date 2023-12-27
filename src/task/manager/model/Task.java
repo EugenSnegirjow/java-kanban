@@ -7,7 +7,7 @@ import java.util.Objects;
 public class Task {
     protected String title;
     protected String description;
-    protected int ID;
+    protected int id;
     protected Status status = Status.NEW;
 
     public Task(String title, String description) {
@@ -39,12 +39,12 @@ public class Task {
         this.description = description;
     }
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
@@ -52,16 +52,16 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return ID == task.ID && Objects.equals(title, task.title) && Objects.equals(description, task.description);
+        return id == task.id && Objects.equals(title, task.title) && Objects.equals(description, task.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, description, ID);
+        return Objects.hash(title, description, id);
     }
 
     @Override
     public String toString() {
-        return ID + "-" + title;
+        return id + "-" + title;
     }
 }

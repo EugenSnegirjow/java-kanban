@@ -7,24 +7,24 @@ import task.manager.model.Task;
 import java.util.ArrayList;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    public ArrayList<Task> tasksHistoryList = new ArrayList<>();
+    private ArrayList<Task> tasksHistoryList = new ArrayList<>();
 
     @Override
     public Task getTask(int taskID) {
-        add(InMemoryTaskManager.tasks.get(taskID));
-        return InMemoryTaskManager.tasks.get(taskID);
+        add(InMemoryTaskManager.getTask(taskID));
+        return InMemoryTaskManager.getTask(taskID);
     }
 
     @Override
     public Epic getEpic(int taskID) {
-        add(InMemoryTaskManager.epics.get(taskID));
-        return InMemoryTaskManager.epics.get(taskID);
+        add(InMemoryTaskManager.getEpic(taskID));
+        return InMemoryTaskManager.getEpic(taskID);
     }
 
     @Override
     public SubTask getSubTask(int taskID) {
-        add(InMemoryTaskManager.subTasks.get(taskID));
-        return InMemoryTaskManager.subTasks.get(taskID);
+        add(InMemoryTaskManager.getSubTask(taskID));
+        return InMemoryTaskManager.getSubTask(taskID);
     }
 
     @Override
