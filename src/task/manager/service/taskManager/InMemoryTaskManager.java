@@ -20,14 +20,17 @@ public class InMemoryTaskManager implements TaskManager {
     public ArrayList<Task> getHistory() {
         return history.getHistory();
     }
+
     public Task getTask(int taskId) {
         history.add(tasks.get(taskId));
         return tasks.get(taskId);
     }
+
     public Epic getEpic(int taskId) {
         history.add(epics.get(taskId));
         return epics.get(taskId);
     }
+
     public SubTask getSubTask(int taskId) {
         history.add(subTasks.get(taskId));
         return subTasks.get(taskId);
