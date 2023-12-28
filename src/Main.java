@@ -1,9 +1,9 @@
 import task.manager.model.Epic;
 import task.manager.model.SubTask;
 import task.manager.model.Task;
-import task.manager.service.HistoryManager;
 import task.manager.service.Managers;
-import task.manager.service.TaskManager;
+import task.manager.service.historyManager.HistoryManager;
+import task.manager.service.taskManager.TaskManager;
 
 import java.util.ArrayList;
 
@@ -15,8 +15,7 @@ public class Main {
     static ArrayList<Integer> allTasksIDs = new ArrayList<>();
 
     public static void main(String[] args) {
-        Managers managers = new Managers();
-        TaskManager manager = managers.getDefault();
+        TaskManager manager = Managers.getDefault();
         for (int i = 1; i <= 5; i++) {
             task = new Task("Простая задача " + i, "Описание простой задачи " + i);
             allTasksIDs.add(manager.create(task));
@@ -36,20 +35,20 @@ public class Main {
 
         ArrayList<Task> allTasks = manager.getAllTasks();
         for (Task task : allTasks) {
-            historyManager.getTask(task.getId());
+            manager.getTask(task.getId());
         }
 
         ArrayList<Task> allEpics = manager.getAllEpics();
         for (Task task : allEpics) {
-            historyManager.getEpic(task.getId());
+            manager.getEpic(task.getId());
         }
 
         ArrayList<Task> allSubTasks = manager.getAllSubTasks();
         for (Task task : allSubTasks) {
-            historyManager.getSubTask(task.getId());
+            manager.getSubTask(task.getId());
         }
 
-        ArrayList<Task> history = historyManager.getHistory();
+        ArrayList<Task> history = manager.getHistory();
         for (Task task1 : history) {
             System.out.println(task1.getTitle() + "\n" + task1.getDescription());
         }

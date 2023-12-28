@@ -1,6 +1,6 @@
 package task.manager.model;
 
-import task.manager.service.Status;
+import task.manager.service.taskManager.Status;
 
 import java.util.Objects;
 

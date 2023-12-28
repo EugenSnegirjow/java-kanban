@@ -1,24 +1,35 @@
-package task.manager.service;
+package task.manager.service.taskManager;
 
 import task.manager.model.Epic;
 import task.manager.model.SubTask;
 import task.manager.model.Task;
+import task.manager.service.historyManager.HistoryManager;
+import task.manager.service.historyManager.InMemoryHistoryManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class InMemoryTaskManager implements TaskManager {
+
+    private HistoryManager history = new InMemoryHistoryManager();
     private int taskId = 0;
-    private static HashMap<Integer, Task> tasks = new HashMap<>();
-    private static HashMap<Integer, Epic> epics = new HashMap<>();
-    private static HashMap<Integer, SubTask> subTasks = new HashMap<>();
-    public static Task getTask(int taskId) {
+    private HashMap<Integer, Task> tasks = new HashMap<>();
+    private HashMap<Integer, Epic> epics = new HashMap<>();
+    private HashMap<Integer, SubTask> subTasks = new HashMap<>();
+
+    public ArrayList<Task> getHistory() {
+        return history.getHistory();
+    }
+    public Task getTask(int taskId) {
+        history.add(tasks.get(taskId));
         return tasks.get(taskId);
     }
-    public static Epic getEpic(int taskId) {
+    public Epic getEpic(int taskId) {
+        history.add(epics.get(taskId));
         return epics.get(taskId);
     }
-    public static SubTask getSubTask(int taskId) {
+    public SubTask getSubTask(int taskId) {
+        history.add(subTasks.get(taskId));
         return subTasks.get(taskId);
     }
 
@@ -74,8 +85,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<Task> getAllTasks() {
         ArrayList<Task> tasks = new ArrayList<>();
-        for (Integer task : InMemoryTaskManager.tasks.keySet()) {
-            tasks.add(InMemoryTaskManager.tasks.get(task));
+        for (Integer task : this.tasks.keySet()) {
+            tasks.add(this.tasks.get(task));
         }
         return tasks;
     }
