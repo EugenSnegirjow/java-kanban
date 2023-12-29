@@ -3,15 +3,15 @@ package task.manager.service.taskManager;
 import task.manager.model.Epic;
 import task.manager.model.SubTask;
 import task.manager.model.Task;
+import task.manager.service.Managers;
 import task.manager.service.historyManager.HistoryManager;
-import task.manager.service.historyManager.InMemoryHistoryManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private HistoryManager history = new InMemoryHistoryManager();
+    private HistoryManager history = Managers.getDefaultHistory();
     private int taskId = 0;
     private HashMap<Integer, Task> tasks = new HashMap<>();
     private HashMap<Integer, Epic> epics = new HashMap<>();
