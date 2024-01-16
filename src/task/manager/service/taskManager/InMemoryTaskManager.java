@@ -170,6 +170,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.clear();
         subTasks.clear();
         epics.clear();
+        history.removeHistory();
     }
 
     @Override
