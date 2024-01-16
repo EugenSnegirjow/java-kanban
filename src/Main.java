@@ -21,50 +21,64 @@ public class Main {
             allTasksIDs.add(manager.create(task));
         }
 
-        for (int i = 1; i <= 2; i++) {
+        for (int i = 1; i <= 2; i++){
             epic = new Epic("Сложная задача " + i, "Описание сложной задачи " + i);
             allTasksIDs.add(manager.create(epic));
-            for (int j = 1; j <= 2; j++) {
+        }
+
+        for (int i = 3; i <= 4; i++) {
+            epic = new Epic("Сложная задача " + i, "Описание сложной задачи " + i);
+            allTasksIDs.add(manager.create(epic));
+            for (int j = 1; j <= 3; j++) {
                 subTask = new SubTask("Подзадача " + j + " сложной задачи " + i,
-                        "Описание подзадачи " + j + " сложной задачи " + i, epic.getId());
-                allTasksIDs.add(manager.create(subTask));
+                        "Описание подзадачи " + j + " сложной задачи " + i);//, epic.getId()
+                allTasksIDs.add(manager.create(epic.getId(), subTask));
             }
         }
+
+
 
         HistoryManager historyManager = Managers.getDefaultHistory();
 
         ArrayList<Task> allTasks = manager.getAllTasks();
-        for (Task task : allTasks) {
-            manager.getTask(task.getId());
-        }
+//        for (Task task : allTasks) {
+//            manager.getTask(task.getId());
+//        }
+        manager.getTask(1);
+        manager.getTask(3);
+        manager.getTask(1);
+        manager.getTask(4);
+        manager.getTask(3);
+        manager.getEpic(6);
+        manager.getEpic(7);
+        manager.getEpic(8);
+        manager.getSubTask(9);
+        manager.getSubTask(10);
+        manager.getSubTask(11);
+        manager.getEpic(6);
+        manager.getSubTask(13);
+        manager.getSubTask(14);
+        manager.getSubTask(15);
 
-        ArrayList<Task> allEpics = manager.getAllEpics();
-        for (Task task : allEpics) {
-            manager.getEpic(task.getId());
-        }
 
-        ArrayList<Task> allSubTasks = manager.getAllSubTasks();
-        for (Task task : allSubTasks) {
-            manager.getSubTask(task.getId());
-        }
+
 
         ArrayList<Task> history = manager.getHistory();
         for (Task task1 : history) {
-            System.out.println(task1.getTitle() + "\n" + task1.getDescription());
+            //System.out.println(task1.getTitle() + task1.getId());// + "\n" + task1.getDescription());
+            System.out.println(task1.getTitle() + ", id - " + task1.getId());// + "\n" + task1.getDescription());
         }
+        System.out.println("--------------------");
 
+        manager.removeTask(3);
+        manager.removeTask(1);
+
+        manager.removeEpic(8);
+        history = manager.getHistory();
+        for (Task task1 : history) {
+            //System.out.println(task1.getTitle() + task1.getId());// + "\n" + task1.getDescription());
+            System.out.println(task1.getTitle() + ", id - " + task1.getId());// + "\n" + task1.getDescription());
+        }
     }
 
-    public static void printMenu() {
-        System.out.println("1 - ввести простую задачу \n" +
-                "2 - ввести сложную задачу\n" +
-                "3 - ввести подзадачу\n" +
-                "4 - \n" +
-                "5 - \n" +
-                "6 - \n" +
-                "7 - \n" +
-                "8 - \n" +
-                "9 - \n" +
-                "10 - ");
-    }
 }
