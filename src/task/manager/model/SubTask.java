@@ -1,13 +1,19 @@
 package task.manager.model;
 
+import task.manager.service.taskManager.Status;
+
 import java.util.Objects;
 
 public class SubTask extends Task {
     private int epicTaskId;
 
+    public SubTask(int id, String title, Status status, String description, int epicTaskId) {
+        super(id, title, status, description);
+        this.epicTaskId = epicTaskId;
+    }
+
     public SubTask(String title, String description) {
         super(title, description);
-        //this.epicTaskId = epicTaskId;
     }
 
     public int getEpicTaskId() {
@@ -30,5 +36,10 @@ public class SubTask extends Task {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), epicTaskId);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d,%s,%s,%s,%s,%d\n", id, TypeOfTasks.SUBTASK, title, status, description, epicTaskId);
     }
 }

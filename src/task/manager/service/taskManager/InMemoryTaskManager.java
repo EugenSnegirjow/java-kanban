@@ -11,28 +11,32 @@ import java.util.HashMap;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private HistoryManager history = Managers.getDefaultHistory();
+    private HistoryManager managerHistory = Managers.getDefaultHistory();
     private int taskId = 0;
     private HashMap<Integer, Task> tasks = new HashMap<>();
     private HashMap<Integer, Epic> epics = new HashMap<>();
     private HashMap<Integer, SubTask> subTasks = new HashMap<>();
 
-    public ArrayList<Task> getHistory() {
-        return history.getHistory();
+    protected HistoryManager getHistoryManager () {
+        return managerHistory;
+    }
+
+    public ArrayList<Task> getManagerHistory() {
+        return managerHistory.getHistory();
     }
 
     public Task getTask(int taskId) {
-        history.add(tasks.get(taskId));
+        managerHistory.add(tasks.get(taskId));
         return tasks.get(taskId);
     }
 
     public Epic getEpic(int taskId) {
-        history.add(epics.get(taskId));
+        managerHistory.add(epics.get(taskId));
         return epics.get(taskId);
     }
 
     public SubTask getSubTask(int taskId) {
-        history.add(subTasks.get(taskId));
+        managerHistory.add(subTasks.get(taskId));
         return subTasks.get(taskId);
     }
 
@@ -124,15 +128,15 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeTask(Integer taskId) {
-        history.remove(taskId);
+        managerHistory.remove(taskId);
         tasks.remove(taskId);
     }
 
     @Override
     public void removeEpic(Integer taskId) {
-        history.remove(taskId);
+        managerHistory.remove(taskId);
         for (Integer subTaskId : epics.get(taskId).getSubTaskIds()) {
-            history.remove(subTaskId);
+            managerHistory.remove(subTaskId);
             subTasks.remove(subTaskId);
         }
         epics.remove(taskId);
@@ -140,7 +144,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeSubTask(Integer taskId) {
-        history.remove(taskId);
+        managerHistory.remove(taskId);
         int epicID = subTasks.get(taskId).getEpicTaskId();
         Status subTaskStatus = subTasks.get(taskId).getStatus();
         subTasks.remove(taskId);
@@ -170,7 +174,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.clear();
         subTasks.clear();
         epics.clear();
-        history.removeHistory();
+        managerHistory.removeHistory();
     }
 
     @Override

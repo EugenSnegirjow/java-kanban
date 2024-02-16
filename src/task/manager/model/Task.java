@@ -10,6 +10,13 @@ public class Task {
     protected int id;
     protected Status status = Status.NEW;
 
+    public Task(int id, String title, Status status, String description) {
+        this.title = title;
+        this.description = description;
+        this.id = id;
+        this.status = status;
+    }
+
     public Task(String title, String description) {
         this.title = title;
         this.description = description;
@@ -62,6 +69,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return id + "-" + title;
+        return String.format("%d,%s,%s,%s,%s\n", id, TypeOfTasks.TASK, title, status, description);
     }
 }

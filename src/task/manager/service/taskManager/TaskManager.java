@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public interface TaskManager {
 
-    ArrayList<Task> getHistory();
+    ArrayList<Task> getManagerHistory();
 
     Task getTask(int taskID);
     Epic getEpic(int taskID);
