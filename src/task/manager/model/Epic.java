@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
+
+    /**Как инициализировать в конструкторе, если сабтаски ещё не созданы в момент создания эпиков? У меня при создании
+     * сабтасков в конструктор передаётся id эпика*/
     private ArrayList<Integer> subTaskIds = new ArrayList<>();
 
     public Epic(int id, String title, Status status, String description) {
@@ -34,7 +37,11 @@ public class Epic extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Epic epic = (Epic) o;
-        return Objects.equals(this.subTaskIds, epic.subTaskIds);
+        return this.id == epic.id
+                && Objects.equals(this.subTaskIds, epic.subTaskIds)
+                && Objects.equals(this.status, epic.status)
+                && Objects.equals(this.description, epic.description)
+                && Objects.equals(this.title, epic.title);
     }
 
     @Override

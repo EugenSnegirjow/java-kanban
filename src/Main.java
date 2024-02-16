@@ -3,7 +3,6 @@ import task.manager.model.SubTask;
 import task.manager.model.Task;
 import task.manager.service.Managers;
 import task.manager.service.autoSaver.FileBackedTasksManager;
-import task.manager.service.historyManager.HistoryManager;
 import task.manager.service.taskManager.TaskManager;
 
 import java.io.IOException;
@@ -19,17 +18,10 @@ public class Main {
     static ArrayList<Integer> allTasksIDs = new ArrayList<>();
 
 
-    static FileBackedTasksManager loadFromFile(Path file) {
-
-
-        return null;
-    }
-
     public static void main(String[] args) throws IOException {
         Path save = Paths.get("src\\task\\manager\\resources\\Save.csv");
 
         FileBackedTasksManager saver = new FileBackedTasksManager(save);
-
 
         TaskManager manager = Managers.getDefault();
         for (int i = 1; i <= 5; i++) {
@@ -56,12 +48,6 @@ public class Main {
             }
         }
 
-        HistoryManager historyManager = Managers.getDefaultHistory();
-
-        ArrayList<Task> allTasks = manager.getAllTasks();
-//        for (Task task : allTasks) {
-//            manager.getTask(task.getId());
-//        }
         manager.getTask(1);
         manager.getTask(3);
         manager.getTask(1);
@@ -77,7 +63,6 @@ public class Main {
         manager.getSubTask(13);
         manager.getSubTask(14);
         manager.getSubTask(15);
-
 
         saver.getTask(1);
         saver.getTask(3);
@@ -97,8 +82,7 @@ public class Main {
 
         ArrayList<Task> history = manager.getManagerHistory();
         for (Task task1 : history) {
-            //System.out.println(task1.getTitle() + task1.getId());// + "\n" + task1.getDescription());
-            System.out.println(task1.getTitle() + ", id - " + task1.getId());// + "\n" + task1.getDescription());
+            System.out.println(task1.getTitle() + ", id - " + task1.getId());
         }
         System.out.println("--------------------");
 
@@ -108,10 +92,8 @@ public class Main {
         manager.removeEpic(8);
         history = manager.getManagerHistory();
         for (Task task1 : history) {
-            //System.out.println(task1.getTitle() + task1.getId());// + "\n" + task1.getDescription());
-            System.out.println(task1.getTitle() + ", id - " + task1.getId());// + "\n" + task1.getDescription());
+            System.out.println(task1.getTitle() + ", id - " + task1.getId());
         }
-
     }
 
 }
