@@ -35,9 +35,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         Epic epic;
         SubTask subTask;
 
-        Path save = Paths.get(
-                "C:\\Users\\Евгений\\dev\\Practicum\\java-kanban\\src\\task\\manager\\resources\\Save.csv"
-        );
+        Path save = Paths.get("src\\task\\manager\\resources\\Save.csv");
         FileBackedTasksManager manager = new FileBackedTasksManager(save);
         for (int i = 1; i <= 5; i++) {
             task = new Task("Простая задача " + i, "Описание простой задачи " + i);

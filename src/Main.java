@@ -26,9 +26,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        Path save = Paths.get(
-                "C:\\Users\\Евгений\\dev\\Practicum\\java-kanban\\src\\task\\manager\\resources\\Save.csv"
-        );
+        Path save = Paths.get("src\\task\\manager\\resources\\Save.csv");
 
         FileBackedTasksManager saver = new FileBackedTasksManager(save);
 
