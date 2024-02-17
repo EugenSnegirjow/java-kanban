@@ -29,8 +29,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         this.file = file;
     }
 
-    /** Сам не знаю зачем метод main нужен здесь. В ТЗ было написано, что надо создать его именно в этом классе.*/
-
     public static FileBackedTasksManager loadFromFile(Path file) {
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
         try (BufferedReader bufferedReader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {

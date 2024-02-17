@@ -7,8 +7,6 @@ import java.util.Objects;
 
 public class Epic extends Task {
 
-    /**Как инициализировать в конструкторе, если сабтаски ещё не созданы в момент создания эпиков? У меня при создании
-     * сабтасков в конструктор передаётся id эпика*/
     private ArrayList<Integer> subTaskIds;
 
     public Epic(int id, String title, Status status, String description) {
