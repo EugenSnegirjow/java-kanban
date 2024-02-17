@@ -9,14 +9,16 @@ public class Epic extends Task {
 
     /**Как инициализировать в конструкторе, если сабтаски ещё не созданы в момент создания эпиков? У меня при создании
      * сабтасков в конструктор передаётся id эпика*/
-    private ArrayList<Integer> subTaskIds = new ArrayList<>();
+    private ArrayList<Integer> subTaskIds;
 
     public Epic(int id, String title, Status status, String description) {
         super(id, title, status, description);
+        subTaskIds = new ArrayList<>();
     }
 
     public Epic(String title, String description) {
         super(title, description);
+        subTaskIds = new ArrayList<>();
     }
 
     public ArrayList<Integer> getSubTaskIds() {
