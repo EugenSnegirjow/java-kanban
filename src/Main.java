@@ -8,7 +8,12 @@ import task.manager.service.taskManager.TaskManager;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+
+import static task.manager.model.Status.NEW;
 
 
 public class Main {
@@ -21,11 +26,19 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Path save = Paths.get("src\\task\\manager\\resources\\Save.csv");
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
         FileBackedTasksManager saver = new FileBackedTasksManager(save);
 
         TaskManager manager = Managers.getDefault();
         for (int i = 1; i <= 5; i++) {
-            task = new Task("Простая задача " + i, "Описание простой задачи " + i);
+            task = new Task(
+                    i,
+                    "Простая задача " + i,
+                    NEW,
+                    "Описание простой задачи ",
+                    LocalDateTime.parse("11.02.24 10:0" + i, formatter),
+                    Duration.ofMinutes(50)
+                    );
             allTasksIDs.add(manager.create(task));
             saver.create(task);
         }
@@ -93,6 +106,11 @@ public class Main {
         history = manager.getManagerHistory();
         for (Task task1 : history) {
             System.out.println(task1.getTitle() + ", id - " + task1.getId());
+        }
+
+        FileBackedTasksManager fileBackedTasksManager = FileBackedTasksManager.loadFromFile(save);
+        for (Task subTask : fileBackedTasksManager.getAllSubTasks()) {
+            System.out.println(subTask);
         }
     }
 

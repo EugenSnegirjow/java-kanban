@@ -4,6 +4,7 @@ import task.manager.model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private ArrayList<Task> tasksHistoryList;
@@ -59,7 +60,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void add(Task task) {
         if (task == null) {
-            System.out.println("Такой задачи нет");
             return;
         }
         if (tasksHistory.containsKey(task.getId())) {
@@ -100,6 +100,23 @@ public class InMemoryHistoryManager implements HistoryManager {
             this.next = next;
             this.prev = prev;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InMemoryHistoryManager that = (InMemoryHistoryManager) o;
+        return size == that.size
+                && Objects.equals(tasksHistoryList, that.tasksHistoryList)
+                && Objects.equals(tasksHistory, that.tasksHistory)
+                && Objects.equals(head, that.head)
+                && Objects.equals(tail, that.tail);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tasksHistoryList, tasksHistory, head, tail, size);
     }
 }
 

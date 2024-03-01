@@ -1,11 +1,26 @@
 package task.manager.model;
 
-import task.manager.service.taskManager.Status;
-
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+
+import static task.manager.model.TypeOfTasks.SUBTASK;
 
 public class SubTask extends Task {
     private int epicTaskId;
+
+    public SubTask(int id,
+                   String title,
+                   Status status,
+                   String description,
+                   LocalDateTime startTime,
+                   Duration duration,
+                   int epicTaskId
+    ) {
+        super(id, title, status, description, startTime, duration);
+        this.epicTaskId = epicTaskId;
+    }
 
     public SubTask(int id, String title, Status status, String description, int epicTaskId) {
         super(id, title, status, description);
@@ -40,6 +55,22 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return String.format("%d,%s,%s,%s,%s,%d\n", id, TypeOfTasks.SUBTASK, title, status, description, epicTaskId);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+        String startTime = null;
+        if (this.startTime != null) {
+            startTime = this.startTime.format(formatter);
+        }
+        String endTime = null;
+        if (getEndTime() != null) {
+            endTime = this.endTime.format(formatter);
+        }
+
+        String duration = null;
+        if (this.duration != null) {
+            duration = String.format("%s", this.duration.toMinutes());
+        }
+
+        return String.format("%d,%s,%s,%s,%s,%s,%s,%s,%d",
+                id, SUBTASK, title, status, description, startTime, endTime, duration, epicTaskId);
     }
 }

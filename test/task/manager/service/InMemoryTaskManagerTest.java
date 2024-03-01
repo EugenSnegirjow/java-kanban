@@ -1,0 +1,216 @@
+package task.manager.service;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import task.manager.model.Epic;
+import task.manager.model.SubTask;
+import task.manager.model.Task;
+import task.manager.service.taskManager.InMemoryTaskManager;
+
+public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
+
+    @BeforeEach
+    @Override
+    public void createManagers() {
+        voidManager = Managers.getDefault();
+        Task task1 = new Task("Task1", "Description Task1");
+        Task task2 = new Task("Task2", "Description Task2");
+        Epic epic1 = new Epic("Epic1", "Description Epic1");
+        Epic epic2 = new Epic("Epic2", "Description Epic2");
+        SubTask subTask1 = new SubTask("subTask2.1", "Description subTask1");
+        SubTask subTask2 = new SubTask("subTask2.2", "Description subTask2");
+        manager = Managers.getDefault();
+        manager.create(task1);
+        manager.create(task2);
+        manager.create(epic1);
+        manager.create(epic2);
+        manager.create(epic2.getId(), subTask1);
+        manager.create(epic2.getId(), subTask2);
+    }
+
+    @Test
+    @Override
+    public void getManagerHistory() {
+        super.getManagerHistory();
+    }
+
+    @Test
+    @Override
+    public void getManagerHistoryForVoidHistory() {
+        super.getManagerHistoryForVoidHistory();
+    }
+
+    @Test
+    @Override
+    void getTask() {
+        super.getTask();
+    }
+
+    @Test
+    @Override
+    void getWrongTask() {
+        super.getWrongTask();
+    }
+
+    @Test
+    @Override
+    void getTaskForVoidTaskList() {
+        super.getTaskForVoidTaskList();
+    }
+
+    @Test
+    @Override
+    void getEpic() {
+        super.getEpic();
+    }
+
+    @Test
+    @Override
+    void getWrongEpic() {
+        super.getWrongEpic();
+    }
+
+    @Test
+    @Override
+    void getEpicForVoidEpicList() {
+        super.getEpicForVoidEpicList();
+    }
+
+    @Test
+    @Override
+    void getSubTask() {
+        super.getSubTask();
+    }
+
+    @Test
+    @Override
+    void getWrongSubtask() {
+        super.getWrongSubtask();
+    }
+
+    @Test
+    @Override
+    void getSubTskForVoidSubTaskList() {
+        super.getSubTskForVoidSubTaskList();
+    }
+
+    @Test
+    @Override
+    void createTask() {
+        super.createTask();
+    }
+
+    @Test
+    @Override
+    void createEpic() {
+        super.createEpic();
+    }
+
+    @Test
+    @Override
+    void createSubTask() {
+        super.createSubTask();
+    }
+
+    @Test
+    @Override
+    void createSubTaskWithWrongEpic() {
+        super.createSubTaskWithWrongEpic();
+    }
+
+    @Test
+    @Override
+    void getAllTasks() {
+        super.getAllTasks();
+    }
+
+    @Test
+    @Override
+    void getAllTasksForVoidTaskList() {
+        super.getAllTasksForVoidTaskList();
+    }
+
+    @Test
+    @Override
+    void getAllEpics() {
+        super.getAllEpics();
+    }
+
+    @Test
+    @Override
+    void getAllTasksForVoidEpicList() {
+        super.getAllTasksForVoidEpicList();
+    }
+
+    @Test
+    @Override
+    void getAllSubTasks() {
+        super.getAllSubTasks();
+    }
+
+    @Test
+    @Override
+    void getAllTasksForVoidSubTaskList() {
+        super.getAllTasksForVoidSubTaskList();
+    }
+
+    @Test
+    @Override
+    void getAllSubTasksForEpic() {
+        super.getAllSubTasksForEpic();
+    }
+
+    @Test
+    @Override
+    void getAllSubTasksForEpicWithVoidSubTaskList() {
+        super.getAllSubTasksForEpicWithVoidSubTaskList();
+    }
+
+    @Test
+    @Override
+    void removeTask() {
+        super.removeTask();
+    }
+
+    @Test
+    @Override
+    void removeEpic() {
+        super.removeEpic();
+    }
+
+    @Test
+    @Override
+    void removeSubTask() {
+        super.removeSubTask();
+    }
+
+    @Test
+    @Override
+    void removeAllTasks() {
+        super.removeAllTasks();
+    }
+
+    @Test
+    @Override
+    void updateTask() {
+        super.updateTask();
+    }
+
+    @Test
+    @Override
+    void updateEpicWithSubTasks() {
+        super.updateEpicWithSubTasks();
+    }
+
+    @Test
+    @Override
+    void updateEpicWithoutSubTasks() {
+        super.updateEpicWithoutSubTasks();
+    }
+
+    @Test
+    @Override
+    void updateSubTask() {
+        super.updateSubTask();
+    }
+}

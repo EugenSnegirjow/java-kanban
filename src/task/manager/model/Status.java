@@ -1,4 +1,4 @@
-package task.manager.service.taskManager;
+package task.manager.model;
 
 public enum Status {
     NEW,

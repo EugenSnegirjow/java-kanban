@@ -1,13 +1,20 @@
 package task.manager.model;
 
-import task.manager.service.taskManager.Status;
-
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
+
+import static task.manager.model.TypeOfTasks.EPIC;
 
 public class Epic extends Task {
 
     private ArrayList<Integer> subTaskIds;
+
+    public Epic(int id, String title, Status status, String description, LocalDateTime startTime, Duration duration) {
+        super(id, title, status, description, startTime, duration);
+    }
 
     public Epic(int id, String title, Status status, String description) {
         super(id, title, status, description);
@@ -19,15 +26,27 @@ public class Epic extends Task {
         subTaskIds = new ArrayList<>();
     }
 
+    public void setStartTimeEndTimeAndDuration(LocalDateTime startTime, LocalDateTime endTime, Duration duration) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.duration = duration;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+
     public ArrayList<Integer> getSubTaskIds() {
         return subTaskIds;
     }
 
-    public void addSubTaskIds(int subTaskID) {
+    public void addSubTaskId(Integer subTaskID) {
         subTaskIds.add(subTaskID);
     }
 
-    public void removeSubtaskId(int id) {
+    public void removeSubtaskId(Integer id) {
         subTaskIds.remove(id);
     }
 
@@ -51,6 +70,22 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return String.format("%d,%s,%s,%s,%s\n", id, TypeOfTasks.EPIC, title, status, description);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+        String startTime = null;
+        if (this.startTime != null) {
+            startTime = this.startTime.format(formatter);
+        }
+        String endTime = null;
+        if (getEndTime() != null) {
+            endTime = this.endTime.format(formatter);
+        }
+
+        String duration = null;
+        if (this.duration != null) {
+            duration = String.format("%s", this.duration.toMinutes());
+        }
+
+        return String.format("%d,%s,%s,%s,%s,%s,%s,%s",
+                id, EPIC, title, status, description, startTime, endTime, duration);
     }
 }
