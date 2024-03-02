@@ -1,6 +1,10 @@
 package task.manager.service.autoSaver;
 
-import task.manager.model.*;
+import task.manager.enums.Status;
+import task.manager.enums.TypeOfTasks;
+import task.manager.model.Epic;
+import task.manager.model.SubTask;
+import task.manager.model.Task;
 import task.manager.service.exception.ManagerSaveException;
 import task.manager.service.historyManager.HistoryManager;
 import task.manager.service.taskManager.InMemoryTaskManager;
@@ -45,6 +49,25 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             List<Integer> history = historyFromString(bufferedReader.readLine());
 
             for (Task task : tasksSortedById) {
+
+
+                /** Не понимаю как заменить на switch-case. Так это не работает, и IDE предлагает заменить на else-if
+//                switch (task.getClass()) {
+//                    case SubTask.class:
+//                        fileBackedTasksManager.subTasks.put(task.getId(), (SubTask) task);
+//                        fileBackedTasksManager.epics.get(((SubTask) task).getEpicTaskId()).addSubTaskId(task.getId());
+//                        fileBackedTasksManager.sortedSubTasks.add((SubTask) task);
+//                        fileBackedTasksManager.sortedTasksAndSubTasks.add(task);
+//                        break;
+//                    case Epic.class:
+//                        fileBackedTasksManager.epics.put(task.getId(), (Epic) task);
+//                        break;
+//                    default:
+//                        fileBackedTasksManager.tasks.put(task.getId(), task);
+//                        fileBackedTasksManager.sortedTasks.add(task);
+//                        fileBackedTasksManager.sortedTasksAndSubTasks.add(task);
+//                }*/
+
                 if (task.getClass().equals(SubTask.class)) {
                     fileBackedTasksManager.subTasks.put(task.getId(), (SubTask) task);
                     fileBackedTasksManager.epics.get(((SubTask) task).getEpicTaskId()).addSubTaskId(task.getId());

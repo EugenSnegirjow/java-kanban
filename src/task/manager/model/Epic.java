@@ -1,12 +1,14 @@
 package task.manager.model;
 
+import task.manager.enums.Status;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static task.manager.model.TypeOfTasks.EPIC;
+import static task.manager.enums.TypeOfTasks.EPIC;
 
 public class Epic extends Task {
 
@@ -26,6 +28,8 @@ public class Epic extends Task {
         subTaskIds = new ArrayList<>();
     }
 
+/** Все 3 поля зависят друг от друга, если меняется одно, то обязательно меняется одно из других полей, или оба.
+ * и все они зависят от сабтасков полей сабтасков */
     public void setStartTimeEndTimeAndDuration(LocalDateTime startTime, LocalDateTime endTime, Duration duration) {
         this.startTime = startTime;
         this.endTime = endTime;

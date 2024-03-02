@@ -1,5 +1,8 @@
 package task.manager.model;
 
+import task.manager.enums.Status;
+import task.manager.enums.TypeOfTasks;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

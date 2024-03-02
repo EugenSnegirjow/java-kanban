@@ -1,7 +1,7 @@
 package task.manager.service.taskManager;
 
+import task.manager.enums.Status;
 import task.manager.model.Epic;
-import task.manager.model.Status;
 import task.manager.model.SubTask;
 import task.manager.model.Task;
 import task.manager.service.Managers;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static task.manager.model.Status.*;
+import static task.manager.enums.Status.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -177,12 +177,15 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.remove(taskId);
     }
 
-    /** Не понимаю почему задачи не удаляются из TreeMap из-за этого не проходит проверку FileBackedTasksManagerTest*/
     @Override
     public void removeEpic(Integer taskId) {
         managerHistory.remove(taskId);
         for (Integer subTaskId : epics.get(taskId).getSubTaskIds()) {
             managerHistory.remove(subTaskId);
+
+            /** Не понимаю почему задачи не удаляются из TreeMap
+             * Из-за этого не проходит проверку FileBackedTasksManagerTest*/
+
             System.out.println("Список сабтасков до удаления" + sortedSubTasks);
             sortedSubTasks.remove(subTasks.get(subTaskId));
             System.out.println("Список сабтасков после удаления" + sortedSubTasks);
@@ -244,12 +247,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void update(Epic newEpic) {
         Epic oldEpic = epics.get(newEpic.getId());
-        /** Пытался сделать смену статуса у всех сабтасков эпика на DONE, если эпику устанавливается статус DONE.
-         * В тесте не меняется статус, ошибка в закомментированной строке в тесте*/
-//        if (newEpic.getStatus().equals(DONE)) {
-//            oldEpic.getSubTaskIds().stream().
-//                    peek(subTaskId -> subTasks.get(subTaskId).setStatus(DONE)).close();
-//        }
         oldEpic.getSubTaskIds().stream().peek(newEpic::addSubTaskId).close();
         epics.put(newEpic.getId(), newEpic);
     }

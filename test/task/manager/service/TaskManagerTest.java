@@ -1,7 +1,7 @@
 package task.manager.service;
 
+import task.manager.enums.Status;
 import task.manager.model.Epic;
-import task.manager.model.Status;
 import task.manager.model.SubTask;
 import task.manager.model.Task;
 import task.manager.service.taskManager.TaskManager;
@@ -9,8 +9,8 @@ import task.manager.service.taskManager.TaskManager;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static task.manager.model.Status.DONE;
-import static task.manager.model.Status.NEW;
+import static task.manager.enums.Status.DONE;
+import static task.manager.enums.Status.NEW;
 
 abstract class TaskManagerTest<T extends TaskManager> {
 

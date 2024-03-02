@@ -18,7 +18,6 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     @BeforeEach
     @Override
     public void createManagers() {
-//        super.createManagers();
         Task task1 = new Task("Task1", "Description Task1");
         Task task2 = new Task("Task2", "Description Task2");
         Epic epic1 = new Epic("Epic1", "Description Epic1");
@@ -44,9 +43,4 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         FileBackedTasksManager managerLoadFromFile = FileBackedTasksManager.loadFromFile(save);
         assertEquals(manager, managerLoadFromFile);
     }
-
-
-
-
-
 }

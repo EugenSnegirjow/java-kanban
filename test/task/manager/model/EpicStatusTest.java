@@ -7,7 +7,7 @@ import task.manager.service.Managers;
 import task.manager.service.taskManager.TaskManager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static task.manager.model.Status.*;
+import static task.manager.enums.Status.*;
 
 public class EpicStatusTest {
 

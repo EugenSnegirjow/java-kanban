@@ -1,11 +1,13 @@
 package task.manager.model;
 
+import task.manager.enums.Status;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-import static task.manager.model.TypeOfTasks.SUBTASK;
+import static task.manager.enums.TypeOfTasks.SUBTASK;
 
 public class SubTask extends Task {
     private int epicTaskId;

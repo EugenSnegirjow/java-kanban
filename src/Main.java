@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-import static task.manager.model.Status.NEW;
+import static task.manager.enums.Status.NEW;
 
 
 public class Main {
