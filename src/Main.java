@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 import static task.manager.enums.Status.NEW;
 
@@ -31,12 +32,13 @@ public class Main {
 
         TaskManager manager = Managers.getDefault();
         for (int i = 1; i <= 5; i++) {
+            String date = "11.01.2" + i + " 10:00";
             task = new Task(
                     i,
                     "Простая задача " + i,
                     NEW,
                     "Описание простой задачи ",
-                    LocalDateTime.parse("11.02.24 10:0" + i, formatter),
+                    LocalDateTime.parse(date, formatter),
                     Duration.ofMinutes(50)
                     );
             allTasksIDs.add(manager.create(task));
@@ -49,13 +51,20 @@ public class Main {
             saver.create(epic);
         }
 
-        for (int i = 3; i <= 4; i++) {
+        int day = 0;
+        for (int i = 3; i <= 4; i++, day++) {
             epic = new Epic("Сложная задача " + i, "Описание сложной задачи " + i);
             allTasksIDs.add(manager.create(epic));
             saver.create(epic);
-            for (int j = 1; j <= 3; j++) {
-                subTask = new SubTask("Подзадача " + j + " сложной задачи " + i,
-                        "Описание подзадачи " + j + " сложной задачи " + i);//, epic.getId()
+            for (int j = 1; j <= 3; j++, day++) {
+                String date = "11.02.0" + day + " 1" + i +":0" + j;
+                        subTask = new SubTask(j,
+                        "Подзадача " + j + " сложной задачи " + i,
+                        NEW,
+                        "Описание подзадачи " + j + " сложной задачи " + i,
+                        LocalDateTime.parse(date, formatter),
+                        Duration.ofMinutes(50),
+                        i);//, epic.getId()
                 allTasksIDs.add(manager.create(epic.getId(), subTask));
                 saver.create(epic.getId(), subTask);
             }
@@ -93,7 +102,7 @@ public class Main {
         saver.getSubTask(14);
         saver.getSubTask(15);
 
-        ArrayList<Task> history = manager.getManagerHistory();
+        List<Task> history = manager.getManagerHistory();
         for (Task task1 : history) {
             System.out.println(task1.getTitle() + ", id - " + task1.getId());
         }
@@ -102,6 +111,7 @@ public class Main {
         manager.removeTask(3);
         manager.removeTask(1);
 
+        System.out.println("Перед удалением эпика 8");
         manager.removeEpic(8);
         history = manager.getManagerHistory();
         for (Task task1 : history) {

@@ -6,10 +6,11 @@ import task.manager.model.Task;
 import task.manager.service.historyManager.HistoryManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
 
-    ArrayList<Task> getManagerHistory();
+    List<Task> getManagerHistory();
 
     Task getTask(Integer taskID);
     Epic getEpic(Integer taskID);
@@ -34,5 +35,7 @@ public interface TaskManager {
     void update(SubTask task);
 
     HistoryManager getHistoryManager();
+
+    List<Task> getPrioritizedTasksAndSubTasks();
 }
 

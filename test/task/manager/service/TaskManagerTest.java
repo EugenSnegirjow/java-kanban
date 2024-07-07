@@ -7,6 +7,7 @@ import task.manager.model.Task;
 import task.manager.service.taskManager.TaskManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static task.manager.enums.Status.DONE;
@@ -40,13 +41,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
         expected.add(manager.getTask(2));
         expected.add(manager.getSubTask(5));
         expected.add(manager.getEpic(4));
-        ArrayList<Task> tasksHistory = manager.getManagerHistory();
+        List<Task> tasksHistory = manager.getManagerHistory();
         assertEquals(expected, tasksHistory);
     }
 
     public void getManagerHistoryForVoidHistory() {
-        ArrayList<Task> tasksHistory = voidManager.getManagerHistory();
-        ArrayList<Task> expected = new ArrayList<>();
+        List<Task> tasksHistory = voidManager.getManagerHistory();
+        List<Task> expected = new ArrayList<>();
         assertEquals(expected, tasksHistory);
     }
 

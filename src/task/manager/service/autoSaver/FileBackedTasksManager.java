@@ -28,6 +28,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     public static final String SAVE_TITLE = "id,type,name,status,description,startTime,endTime,duration,epic";
 
     public FileBackedTasksManager(Path file) {
+        super();
         this.file = file;
     }
 
@@ -49,24 +50,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             List<Integer> history = historyFromString(bufferedReader.readLine());
 
             for (Task task : tasksSortedById) {
-
-
-                /** Не понимаю как заменить на switch-case. Так это не работает, и IDE предлагает заменить на else-if
-//                switch (task.getClass()) {
-//                    case SubTask.class:
-//                        fileBackedTasksManager.subTasks.put(task.getId(), (SubTask) task);
-//                        fileBackedTasksManager.epics.get(((SubTask) task).getEpicTaskId()).addSubTaskId(task.getId());
-//                        fileBackedTasksManager.sortedSubTasks.add((SubTask) task);
-//                        fileBackedTasksManager.sortedTasksAndSubTasks.add(task);
-//                        break;
-//                    case Epic.class:
-//                        fileBackedTasksManager.epics.put(task.getId(), (Epic) task);
-//                        break;
-//                    default:
-//                        fileBackedTasksManager.tasks.put(task.getId(), task);
-//                        fileBackedTasksManager.sortedTasks.add(task);
-//                        fileBackedTasksManager.sortedTasksAndSubTasks.add(task);
-//                }*/
 
                 if (task.getClass().equals(SubTask.class)) {
                     fileBackedTasksManager.subTasks.put(task.getId(), (SubTask) task);
@@ -277,8 +260,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     @Override
-    public void removeEpic(Integer taskId) {
-        super.removeEpic(taskId);
+    public void removeEpic(Integer epicId) {
+        super.removeEpic(epicId);
         save();
     }
 
