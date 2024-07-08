@@ -54,6 +54,9 @@ public class Task {
         this.description = description;
         this.id = id;
         this.status = status;
+        startTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        duration = Duration.ZERO;
+        endTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
     }
 
     public Task(String title, String description) {
@@ -61,8 +64,8 @@ public class Task {
         this.title = title;
         this.description = description;
         startTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
-        duration = Duration.ofMinutes(15);
-        endTime = getEndTime();
+        duration = Duration.ZERO;
+        endTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
     }
 
     public Duration getDuration() {
@@ -74,8 +77,8 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        if (startTime == null || duration == null) return null;
-        return LocalDateTime.from(startTime).plus(duration);
+        if (startTime == null || duration == null) return LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        return LocalDateTime.from(startTime).plus(duration).truncatedTo(ChronoUnit.MINUTES);
     }
 
     public Status getStatus() {

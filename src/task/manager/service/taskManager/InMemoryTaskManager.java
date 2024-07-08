@@ -104,31 +104,25 @@ public class InMemoryTaskManager implements TaskManager {
         subTask.setId(taskId);
         subTask.setEpicTaskId(epic);
 
-        try {
-            if (isHasIntersection(subTask)) {
-                throw new WrongTaskException("Обнаружено пересечение времени выполнения задачи. " +
-                        "Нельзя выполнять несколько задач одновременно. Подзадача не добавлена");
-            }
-            sortedTasksAndSubTasks.add(subTask);
-
-            if (!epics.containsKey(epic)) {
-                throw new NotFoundException("Эпика с ID " + epic + " не существует. Подзадача не добавлена");
-            }
-            sortedSubTasks.add(subTask);
-            subTasks.put(subTask.getId(), subTask);
-            if (!epics.get(epic).getSubTaskIds().contains(subTask.getId())) {
-                epics.get(epic).addSubTaskId(subTask.getId());
-            }
-            updateEpicTime(epics.get(epic));
-            updateEpicStatusForCreateSubTask(epics.get(epic), subTask.getStatus());
-            taskId++;
-
-        } catch (RuntimeException e) {
-            System.out.println(e.getMessage());
-            subTask.setId(-1);
-        } finally {
-            return subTask.getId();
+        if (isHasIntersection(subTask)) {
+            throw new WrongTaskException("Обнаружено пересечение времени выполнения задачи. " +
+                    "Нельзя выполнять несколько задач одновременно. Подзадача не добавлена");
         }
+        sortedTasksAndSubTasks.add(subTask);
+
+        if (!epics.containsKey(epic)) {
+            throw new NotFoundException("Эпика с ID " + epic + " не существует. Подзадача не добавлена");
+        }
+        sortedSubTasks.add(subTask);
+        subTasks.put(subTask.getId(), subTask);
+        if (!epics.get(epic).getSubTaskIds().contains(subTask.getId())) {
+            epics.get(epic).addSubTaskId(subTask.getId());
+        }
+        updateEpicTime(epics.get(epic));
+        updateEpicStatusForCreateSubTask(epics.get(epic), subTask.getStatus());
+        taskId++;
+        return subTask.getId();
+
     }
 
     private void updateEpicStatusForCreateSubTask(Epic epic, Status subTaskStatus) {
@@ -260,7 +254,12 @@ public class InMemoryTaskManager implements TaskManager {
         if (!tasks.containsKey(task.getId())) {
             throw new NotFoundException("Задача с id " + task.getId() + " не существует, обновление задачи не выполнено");
         }
+        Task oldTask = tasks.get(task.getId());
+        sortedTasksAndSubTasks.remove(oldTask);
+        sortedTasks.remove(oldTask);
         if (!sortedTasksAndSubTasks.add(task)) {
+            sortedTasksAndSubTasks.add(oldTask);
+            sortedTasks.add(oldTask);
             throw new WrongTaskException("Задача с началом в " + task.getStartTime() + " уже существует. " +
                     "Не может быть нескольких задач с одинаковым временем начала.");
         }
@@ -283,10 +282,13 @@ public class InMemoryTaskManager implements TaskManager {
         if (!subTasks.containsKey(task.getId())) {
             throw new NotFoundException("Подзадачи с id " + task.getId() + " не существует, обновление подзадачи не выполнено");
         }
-//        sortedTasksAndSubTasks.remove(subTasks.get(task.getId()));
-//        sortedSubTasks.remove(subTasks.get(task.getId()));
+        SubTask oldTask = subTasks.get(task.getId());
+        sortedTasksAndSubTasks.remove(oldTask);
+        sortedSubTasks.remove(oldTask);
 
         if (!sortedTasksAndSubTasks.add(task)) {
+            sortedTasksAndSubTasks.add(oldTask);
+            sortedSubTasks.add(oldTask);
             throw new WrongTaskException("Задача с началом в " + task.getStartTime() + " уже существует. " +
                     "Не может быть нескольких задач с одинаковым временем начала.");
         }
@@ -326,20 +328,6 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
 
-        // Сделать duration расчетной
-        List<Duration> durationSubtasks = subTaskList.stream()
-                .map(Task::getDuration)
-                .collect(Collectors.toList());
-
-        Duration durationEpic = Duration.ZERO;
-        for (Duration durationSubtask : durationSubtasks) {
-            if (durationSubtask != null) {
-                durationEpic = durationEpic.plus(durationSubtask);
-            }
-        }
-        if (durationEpic.equals(Duration.ZERO)) {
-            durationEpic = null;
-        }
 
         LocalDateTime startTime = null;
         if (subTaskList.get(0).getStartTime() != null) {
@@ -355,6 +343,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (subTask != null) {
             endTime = subTask.getEndTime();
         }
+        Duration durationEpic = Duration.between(startTime, endTime);
 
         epic.setStartTimeEndTimeAndDuration(startTime, endTime, durationEpic);
     }

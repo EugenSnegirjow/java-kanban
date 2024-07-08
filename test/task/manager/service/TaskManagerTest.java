@@ -4,12 +4,17 @@ import task.manager.enums.Status;
 import task.manager.model.Epic;
 import task.manager.model.SubTask;
 import task.manager.model.Task;
+import task.manager.service.exception.NotFoundException;
 import task.manager.service.taskManager.TaskManager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static task.manager.enums.Status.DONE;
 import static task.manager.enums.Status.NEW;
 
@@ -20,12 +25,16 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     public void createManagers() {
         voidManager = Managers.getDefault();
-        Task task1 = new Task("Task1", "Description Task1");
-        Task task2 = new Task("Task2", "Description Task2");
+        Task task1 = new Task(1, "Task1", Status.NEW, "Description Task1",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), Duration.ofMinutes(15));
+        Task task2 = new Task(1, "Task2", Status.NEW, "Description Task2",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(30), Duration.ofMinutes(15));
         Epic epic1 = new Epic("Epic1", "Description Epic1");
         Epic epic2 = new Epic("Epic2", "Description Epic2");
-        SubTask subTask1 = new SubTask("subTask2.1", "Description subTask1");
-        SubTask subTask2 = new SubTask("subTask2.2", "Description subTask2");
+        SubTask subTask1 = new SubTask(1, "SubTask1", Status.NEW, "Description SubTask1",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(60), Duration.ofMinutes(15), 4);
+        SubTask subTask2 = new SubTask(1, "SubTask2", Status.NEW, "Description SubTask2",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(90), Duration.ofMinutes(15), 4);
         manager = Managers.getDefault();
         manager.create(task1);
         manager.create(task2);
@@ -53,49 +62,60 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     void getTask() {
         Task actual = manager.getTask(1);
-        Task expected = new Task(1, "Task1", NEW, "Description Task1");
+        Task expected = new Task(1, "Task1", Status.NEW, "Description Task1",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), Duration.ofMinutes(15));
         assertEquals(expected, actual);
     }
 
     void getWrongTask() {
-        assertNull(manager.getTask(3));
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> manager.getTask(3));
+        assertEquals("Задачи с ID 3 не существует", exception.getMessage());
     }
 
     void getTaskForVoidTaskList() {
-        assertNull(manager.getTask(3));
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> manager.getTask(3));
+        assertEquals("Задачи с ID 3 не существует", exception.getMessage());
     }
 
     void getEpic() {
         Task actual = manager.getEpic(3);
-        Task expected = new Epic(3, "Epic1", NEW, "Description Epic1");
+        Task expected = new Epic(3, "Epic1", NEW, "Description Epic1",
+                manager.getEpic(3).getStartTime(), manager.getEpic(3).getDuration());
         assertEquals(expected, actual);
     }
 
     void getWrongEpic() {
-        assertNull(manager.getEpic(1));
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> manager.getEpic(1));
+        assertEquals("Эпика с ID 1 не существует", exception.getMessage());
     }
 
     void getEpicForVoidEpicList() {
-        assertNull(manager.getEpic(1));
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> manager.getEpic(1));
+        assertEquals("Эпика с ID 1 не существует", exception.getMessage());
     }
 
     void getSubTask() {
         Task actual = manager.getSubTask(5);
-        Task expected = new SubTask(5, "subTask2.1", NEW, "Description subTask1", 4);
+        Task expected = new SubTask(5, "SubTask1", Status.NEW, "Description SubTask1",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(60), Duration.ofMinutes(15), 4);
         assertEquals(expected, actual);
     }
 
     void getWrongSubtask() {
-        assertNull(manager.getSubTask(1));
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> manager.getSubTask(1));
+        assertEquals("Подзадачи с ID 1 не существует", exception.getMessage());
     }
 
     void getSubTskForVoidSubTaskList() {
-        assertNull(manager.getSubTask(1));
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> manager.getSubTask(1));
+        assertEquals("Подзадачи с ID 1 не существует", exception.getMessage());
     }
 
     void createTask() {
-        Task task1 = new Task(1, "Task1", NEW, "Description Task1");
-        Task task2 = new Task(2, "Task2", NEW, "Description Task2");
+        Task task1 = new Task(1, "Task1", Status.NEW, "Description Task1",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), Duration.ofMinutes(15));
+        Task task2 = new Task(2, "Task2", Status.NEW, "Description Task2",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(30), Duration.ofMinutes(15));
         ArrayList<Task> expected = new ArrayList<>();
         expected.add(task1);
         expected.add(task2);
@@ -118,8 +138,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     void createSubTask() {
-        SubTask task1 = new SubTask(2, "Task1", NEW, "Description Task1", 1);
-        SubTask task2 = new SubTask(3, "Task2", NEW, "Description Task2", 1);
+        SubTask task1 = new SubTask(5, "SubTask1", Status.NEW, "Description SubTask1",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(60), Duration.ofMinutes(15), 4);
+        SubTask task2 = new SubTask(6, "SubTask2", Status.NEW, "Description SubTask2",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(90), Duration.ofMinutes(15), 4);
         ArrayList<SubTask> expected = new ArrayList<>();
         expected.add(task1);
         expected.add(task2);
@@ -132,12 +154,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     void createSubTaskWithWrongEpic() {
-        SubTask task1 = new SubTask(2, "Task1", NEW, "Description Task1", 1);
-        NullPointerException exception = assertThrows(
-                NullPointerException.class,
+        SubTask task1 = new SubTask(2, "Task1", NEW, "Description Task1",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusHours(3), Duration.ofMinutes(15), 1);
+        NotFoundException exception = assertThrows(
+                NotFoundException.class,
                 () -> voidManager.create(2, task1)
         );
-        assertEquals("Эпика с id " + 2 + " не существует", exception.getMessage());
+        assertEquals("Эпика с ID " + 2 + " не существует. Подзадача не добавлена", exception.getMessage());
     }
 
     void getAllTasks() {
@@ -183,8 +206,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     void getAllSubTasksForEpic() {
-        SubTask subTask1 = new SubTask(5, "subTask2.1", NEW, "Description subTask1", 4);
-        SubTask subTask2 = new SubTask(6, "subTask2.2", NEW, "Description subTask2", 4);
+        SubTask subTask1 = new SubTask(5, "SubTask1", Status.NEW, "Description SubTask1",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(60), Duration.ofMinutes(15), 4);
+        SubTask subTask2 = new SubTask(6, "SubTask2", Status.NEW, "Description SubTask2",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(90), Duration.ofMinutes(15), 4);
         ArrayList<Task> expected = new ArrayList<>();
 
         expected.add(subTask1);
@@ -240,16 +265,20 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     void updateTask() {
-        Task task1 = new Task(1, "Task1", NEW, "Description Task1");
+        Task task1 = new Task(1, "Task1", Status.NEW, "Description Task1",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), Duration.ofMinutes(15));
         assertEquals(task1, manager.getTask(1));
 
-        Task taskNew = new Task(1, "Task1", DONE, "Description Task1");
+        Task taskNew = new Task(1, "Task2", DONE, "Description Task2",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), Duration.ofMinutes(15));
         manager.update(taskNew);
         assertEquals(taskNew, manager.getTask(1));
     }
 
     void updateEpicWithSubTasks() {
-        Epic task1 = new Epic(4, "Epic2", NEW, "Description Epic2");
+        Epic task1 = new Epic(4, "Epic2", NEW, "Description Epic2",
+                manager.getSubTask(5).getStartTime(),
+                Duration.between(manager.getSubTask(5).getStartTime(), manager.getSubTask(6).getEndTime()));
         task1.addSubTaskId(5);
         task1.addSubTaskId(6);
         assertEquals(task1, manager.getEpic(4));
@@ -270,13 +299,16 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     void updateSubTask() {
-        SubTask subTask1 = new SubTask(5, "subTask2.1", NEW, "Description subTask1", 4);
+        SubTask subTask1 = new SubTask(5, "SubTask1", Status.NEW, "Description SubTask1",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(60), Duration.ofMinutes(15), 4);
         assertEquals(subTask1, manager.getSubTask(5));
         Status oldEpicStatus = manager.getEpic(4).getStatus();
         assertEquals(NEW, oldEpicStatus);
 
-        subTask1 = new SubTask(5, "subTask2.1", DONE, "Description subTask1", 4);
-        SubTask subTask2 = new SubTask(6, "subTask2.2", DONE, "Description subTask2", 4);
+        subTask1 = new SubTask(5, "SubTask1", DONE, "Description SubTask1",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(60), Duration.ofMinutes(15), 4);
+        SubTask subTask2 = new SubTask(6, "SubTask2", DONE, "Description SubTask2",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(90), Duration.ofMinutes(15), 4);
         manager.update(subTask1);
         manager.update(subTask2);
         assertEquals(subTask1, manager.getSubTask(5));

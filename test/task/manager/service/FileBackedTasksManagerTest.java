@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -23,24 +23,17 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     @BeforeEach
     @Override
     public void createManagers() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
-        Task task1 = new Task("Task1", "Description Task1");
-        Task task2 = new Task("Task2", "Description Task2");
+        Task task1 = new Task(1, "Task1", Status.NEW, "Description Task1",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), Duration.ofMinutes(15));
+        Task task2 = new Task(2, "Task2", Status.NEW, "Description Task2",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(30), Duration.ofMinutes(15));
         Epic epic1 = new Epic("Epic1", "Description Epic1");
         Epic epic2 = new Epic("Epic2", "Description Epic2");
-        SubTask subTask1 = new SubTask(5,
-                "subTask2.1",
-                Status.NEW,
-                "Description subTask1",
-                LocalDateTime.parse("04.03.24 23:35", formatter),
-                Duration.ofMinutes(5), 4
-        );
-        SubTask subTask2 = new SubTask(6,
-                "subTask2.2",
-                Status.NEW,
-                "Description subTask2",
-                LocalDateTime.parse("04.03.24 23:45", formatter),
-                Duration.ofMinutes(5), 4);
+        SubTask subTask1 = new SubTask(5, "SubTask1", Status.NEW, "Description SubTask1",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(60), Duration.ofMinutes(15), 4);
+        SubTask subTask2 = new SubTask(6, "SubTask2", Status.NEW, "Description SubTask2",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(90), Duration.ofMinutes(15), 4);
+
         manager = new FileBackedTasksManager(save);
         manager.create(task1);
         manager.create(task2);
@@ -52,12 +45,11 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         manager.getSubTask(5);
         manager.getEpic(4);
         manager.getEpic(3);
-//        manager.removeEpic(4);
     }
 
     @Test
     public void saveAndLoad() {
         FileBackedTasksManager managerLoadFromFile = FileBackedTasksManager.loadFromFile(save);
-        assertEquals(manager, managerLoadFromFile);
+        assertEquals(manager.toString(), managerLoadFromFile.toString());
     }
 }

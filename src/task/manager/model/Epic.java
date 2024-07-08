@@ -5,7 +5,6 @@ import task.manager.enums.Status;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -17,20 +16,22 @@ public class Epic extends Task {
 
     public Epic(int id, String title, Status status, String description, LocalDateTime startTime, Duration duration) {
         super(id, title, status, description, startTime, duration);
+        setEndTime(duration);
         subTaskIds = new ArrayList<>();
     }
 
     public Epic(int id, String title, Status status, String description) {
         super(id, title, status, description);
-        setStartTimeEndTimeAndDuration(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
-                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
-                Duration.ZERO);
         subTaskIds = new ArrayList<>();
     }
 
     public Epic(String title, String description) {
         super(title, description);
         subTaskIds = new ArrayList<>();
+    }
+
+    public void setEndTime(Duration duration) {
+        endTime = startTime.plus(duration);
     }
 
     public void setStartTimeEndTimeAndDuration(LocalDateTime startTime, LocalDateTime endTime, Duration duration) {
