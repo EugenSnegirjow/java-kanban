@@ -86,32 +86,6 @@ public class HttpTaskServer {
         }
     }
 
-//    private void mangerHandler(HttpExchange exchange) throws IOException {
-//        String path = exchange.getRequestURI().getPath();
-//
-//        if (Pattern.matches("^/api/v1/task-manger/tasks$", path)
-//                || Pattern.matches("^/api/v1/task-manger/tasks/\\d+$", path)) {
-//            new TaskHandler(gson, taskManager).handle(exchange);
-//        } else if (Pattern.matches("^/api/v1/task-manger/subtasks$", path)
-//                || Pattern.matches("^/api/v1/task-manger/subtasks/\\d+$", path)) {
-//            new SubtaskHandler(gson, taskManager).handle(exchange);
-//        } else if (Pattern.matches("^/api/v1/task-manger/epics$", path)
-//                || Pattern.matches("^/api/v1/task-manger/epics/\\d+$", path)) {
-//            new EpicHandler(gson, taskManager).handle(exchange);
-//        } else if (Pattern.matches("^/api/v1/task-manger/history$", path)) {
-//            new HistoryHandler(gson, taskManager).handle(exchange);
-//        } else if (Pattern.matches("^/api/v1/task-manger/prioritized$", path)) {
-//            new PrioritizedHandler(gson, taskManager).handle(exchange);
-//        } else {
-//            HttpHandler handler = exchange1 -> {
-//                exchange1.sendResponseHeaders(400, 0);
-//                String response = "Неверный запрос";
-//                try (OutputStream os = exchange1.getResponseBody()) {
-//                    os.write(response.getBytes());
-//                }
-//            };
-//        }
-//    }
 
 
     public void start() {

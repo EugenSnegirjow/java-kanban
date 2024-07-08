@@ -5,7 +5,6 @@ import task.manager.service.Managers;
 import task.manager.service.autoSaver.FileBackedTasksManager;
 import task.manager.service.taskManager.TaskManager;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -23,8 +22,7 @@ public class Main {
     static SubTask subTask;
     static ArrayList<Integer> allTasksIDs = new ArrayList<>();
 
-
-    public static void main(String[] args) throws IOException {
+    public void test() {
         Path save = Paths.get("src\\task\\manager\\resources\\Save.csv");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
@@ -40,7 +38,7 @@ public class Main {
                     "Описание простой задачи ",
                     LocalDateTime.parse(date, formatter),
                     Duration.ofMinutes(50)
-                    );
+            );
             allTasksIDs.add(manager.create(task));
             saver.create(task);
         }
@@ -58,7 +56,7 @@ public class Main {
             saver.create(epic);
             for (int j = 1; j <= 3; j++, day++) {
                 String date = "11.02.0" + day + " 1" + i +":0" + j;
-                        subTask = new SubTask(j,
+                subTask = new SubTask(j,
                         "Подзадача " + j + " сложной задачи " + i,
                         NEW,
                         "Описание подзадачи " + j + " сложной задачи " + i,
