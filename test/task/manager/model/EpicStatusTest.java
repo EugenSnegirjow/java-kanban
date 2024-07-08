@@ -43,6 +43,7 @@ public class EpicStatusTest {
         manager.create(1, subTaskNEW);
         assertEquals(NEW, epic.getStatus());
     }
+
     @Test
     public void getStatusForAllDONESubtaskLst() {
         manager.create(1, subTaskDONE);

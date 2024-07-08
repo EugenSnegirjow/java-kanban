@@ -33,12 +33,13 @@ public class Task {
         this.duration = duration;
         this.endTime = getEndTime();
     }
+
     public Task(
-                String title,
-                Status status,
-                String description,
-                LocalDateTime startTime,
-                Duration duration
+            String title,
+            Status status,
+            String description,
+            LocalDateTime startTime,
+            Duration duration
     ) {
         this.title = title;
         this.description = description;

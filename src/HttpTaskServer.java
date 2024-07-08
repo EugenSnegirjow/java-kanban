@@ -39,7 +39,6 @@ public class HttpTaskServer {
     }
 
 
-
     public HttpTaskServer(TaskManager taskManager) throws IOException {
         this.taskManager = taskManager;
         gson = Managers.getGson();
@@ -85,7 +84,6 @@ public class HttpTaskServer {
             exchange.close();
         }
     }
-
 
 
     public void start() {

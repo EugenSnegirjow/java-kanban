@@ -16,9 +16,10 @@ import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>{
+class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
 
     Path save = Paths.get("src\\task\\manager\\resources\\Save.csv");
+
     @BeforeEach
     @Override
     public void createManagers() {
@@ -33,7 +34,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
                 "Description subTask1",
                 LocalDateTime.parse("04.03.24 23:35", formatter),
                 Duration.ofMinutes(5), 4
-                );
+        );
         SubTask subTask2 = new SubTask(6,
                 "subTask2.2",
                 Status.NEW,
@@ -55,7 +56,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test
-    public void saveAndLoad () {
+    public void saveAndLoad() {
         FileBackedTasksManager managerLoadFromFile = FileBackedTasksManager.loadFromFile(save);
         assertEquals(manager, managerLoadFromFile);
     }

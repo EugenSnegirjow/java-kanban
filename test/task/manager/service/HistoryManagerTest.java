@@ -130,8 +130,10 @@ class HistoryManagerTest {
         assertEquals(expectedList, historyManager.getHistory());
     }
 
-    /** Нужна ли какая-то дополнительна проверка метода getHistory,
-     если я протестировал его в тестах методов add и removeHistory? */
+    /**
+     * Нужна ли какая-то дополнительна проверка метода getHistory,
+     * если я протестировал его в тестах методов add и removeHistory?
+     */
     @Test
     void getHistory() {
 
@@ -155,6 +157,7 @@ class HistoryManagerTest {
         historyManager.removeHistory();
         assertEquals(expectedVoidList, historyManager.getHistory());
     }
+
     @Test
     void removeHistoryFromVoidHistory() {
         ArrayList<Task> expectedVoidList = new ArrayList<>();

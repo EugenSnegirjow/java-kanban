@@ -15,6 +15,7 @@ public class EpicHandler extends BaseHttpHandler {
     public EpicHandler(Gson gson, TaskManager manager) {
         super(gson, manager);
     }
+
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI().getPath();
@@ -43,7 +44,7 @@ public class EpicHandler extends BaseHttpHandler {
                 }
                 break;
             }
-            case "POST":{
+            case "POST": {
                 String request = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                 Epic task = gson.fromJson(request, Epic.class);
 
@@ -63,9 +64,9 @@ public class EpicHandler extends BaseHttpHandler {
                             manager.update(task);
                             String response = "Эпик успешно обновлена";
                             sendPostSuccess(exchange, response);
-                        }  catch (NotFoundException e) {
+                        } catch (NotFoundException e) {
                             sendNotFound(exchange, e.getMessage());
-                        }  catch (WrongTaskException e) {
+                        } catch (WrongTaskException e) {
                             sendHasInteractions(exchange, e.getMessage());
                         }
                     } else {
@@ -93,7 +94,8 @@ public class EpicHandler extends BaseHttpHandler {
                 }
                 break;
             }
-            default: sendWrongMethod(exchange);
+            default:
+                sendWrongMethod(exchange);
         }
     }
 

@@ -44,7 +44,7 @@ public class SubtaskHandler extends BaseHttpHandler {
                 }
                 break;
             }
-            case "POST":{
+            case "POST": {
                 String request = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                 SubTask task = gson.fromJson(request, SubTask.class);
 
@@ -64,9 +64,9 @@ public class SubtaskHandler extends BaseHttpHandler {
                             manager.update(task);
                             String response = "Подзадача успешно обновлена";
                             sendPostSuccess(exchange, response);
-                        }  catch (NotFoundException e) {
+                        } catch (NotFoundException e) {
                             sendNotFound(exchange, e.getMessage());
-                        }  catch (WrongTaskException e) {
+                        } catch (WrongTaskException e) {
                             sendHasInteractions(exchange, e.getMessage());
                         }
                     } else {
@@ -94,7 +94,8 @@ public class SubtaskHandler extends BaseHttpHandler {
                 }
                 break;
             }
-            default: sendWrongMethod(exchange);
+            default:
+                sendWrongMethod(exchange);
         }
     }
 }

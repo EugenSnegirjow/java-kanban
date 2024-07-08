@@ -70,6 +70,7 @@ class HttpTaskServerTest {
                 Duration.ofMinutes(15));
         manager.create(task);
     }
+
     void createEpics() {
         epic = new Epic(
                 1,
@@ -149,7 +150,8 @@ class HttpTaskServerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         assertEquals(200, response.statusCode(), response.body());
 
-        List<Task> actual = gson.fromJson(response.body(), new TypeToken<ArrayList<Task>>() {}.getType());
+        List<Task> actual = gson.fromJson(response.body(), new TypeToken<ArrayList<Task>>() {
+        }.getType());
         assertNotNull(actual, "Список задач не возвращается");
         assertEquals(1, actual.size(), "Возвращено неверное количество задач");
         assertEquals(task, actual.get(0), "Возвращена неверная задача");
@@ -165,7 +167,8 @@ class HttpTaskServerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         assertEquals(200, response.statusCode(), response.body());
 
-        Task actual = gson.fromJson(response.body(), new TypeToken<Task>() {}.getType());
+        Task actual = gson.fromJson(response.body(), new TypeToken<Task>() {
+        }.getType());
 
         assertNotNull(actual, "Задача не возвращается");
 
@@ -298,6 +301,7 @@ class HttpTaskServerTest {
         assertEquals("Задача с id " + task.getId() + " успешно удалена",
                 response.body(), "Возвращён неверный ответ: " + response.body());
     }
+
     @Test
     void tasksDeleteByWrongId() throws IOException, InterruptedException {
         createTasks();
@@ -323,7 +327,8 @@ class HttpTaskServerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         assertEquals(200, response.statusCode(), response.body());
 
-        List<Epic> actual = gson.fromJson(response.body(), new TypeToken<ArrayList<Epic>>() {}.getType());
+        List<Epic> actual = gson.fromJson(response.body(), new TypeToken<ArrayList<Epic>>() {
+        }.getType());
         assertNotNull(actual, "Список задач не возвращается");
         assertEquals(1, actual.size(), "Возвращено неверное количество задач");
         assertEquals(epic, actual.get(0), "Возвращена неверная задача");
@@ -339,7 +344,8 @@ class HttpTaskServerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         assertEquals(200, response.statusCode(), response.body());
 
-        Epic actual = gson.fromJson(response.body(), new TypeToken<Epic>() {}.getType());
+        Epic actual = gson.fromJson(response.body(), new TypeToken<Epic>() {
+        }.getType());
 
         assertNotNull(actual, "Задача не возвращается");
 
@@ -435,6 +441,7 @@ class HttpTaskServerTest {
         assertEquals("Эпик с id " + epic.getId() + " успешно удалена",
                 response.body(), "Возвращён неверный ответ: " + response.body());
     }
+
     @Test
     void epicsDeleteByWrongId() throws IOException, InterruptedException {
         createEpics();
@@ -460,7 +467,8 @@ class HttpTaskServerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         assertEquals(200, response.statusCode(), response.body());
 
-        List<SubTask> actual = gson.fromJson(response.body(), new TypeToken<ArrayList<SubTask>>() {}.getType());
+        List<SubTask> actual = gson.fromJson(response.body(), new TypeToken<ArrayList<SubTask>>() {
+        }.getType());
         assertNotNull(actual, "Список задач не возвращается");
         assertEquals(1, actual.size(), "Возвращено неверное количество задач");
         assertEquals(subTask, actual.get(0), "Возвращена неверная задача");
@@ -476,7 +484,8 @@ class HttpTaskServerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         assertEquals(200, response.statusCode(), response.body());
 
-        SubTask actual = gson.fromJson(response.body(), new TypeToken<SubTask>() {}.getType());
+        SubTask actual = gson.fromJson(response.body(), new TypeToken<SubTask>() {
+        }.getType());
 
         assertNotNull(actual, "Задача не возвращается");
 
@@ -609,6 +618,7 @@ class HttpTaskServerTest {
         assertEquals("Подзадача с id " + subTask.getId() + " успешно удалена",
                 response.body(), "Возвращён неверный ответ: " + response.body());
     }
+
     @Test
     void subtasksDeleteByWrongId() throws IOException, InterruptedException {
         createSubTasks();
@@ -636,7 +646,8 @@ class HttpTaskServerTest {
         assertEquals(200, response.statusCode(), response.body());
 
         List<Task> expected = manager.getManagerHistory();
-        List<Task> actual = gson.fromJson(response.body(), new TypeToken<ArrayList<Task>>(){}.getType());
+        List<Task> actual = gson.fromJson(response.body(), new TypeToken<ArrayList<Task>>() {
+        }.getType());
 
         assertEquals(expected, actual, "История возвращена неверно");
     }
@@ -653,7 +664,8 @@ class HttpTaskServerTest {
         assertEquals(200, response.statusCode(), response.body());
 
         List<Task> expected = manager.getPrioritizedTasksAndSubTasks();
-        List<Task> actual = gson.fromJson(response.body(), new TypeToken<ArrayList<Task>>(){}.getType());
+        List<Task> actual = gson.fromJson(response.body(), new TypeToken<ArrayList<Task>>() {
+        }.getType());
 
         assertEquals(expected, actual, "Список задач возвращён неверно");
     }

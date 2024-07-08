@@ -6,7 +6,7 @@ import task.manager.service.taskManager.TaskManager;
 
 import java.io.IOException;
 
-public class HistoryHandler  extends BaseHttpHandler {
+public class HistoryHandler extends BaseHttpHandler {
     public HistoryHandler(Gson gson, TaskManager manager) {
         super(gson, manager);
     }

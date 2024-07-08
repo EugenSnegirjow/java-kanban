@@ -55,7 +55,7 @@ public class Main {
             allTasksIDs.add(manager.create(epic));
             saver.create(epic);
             for (int j = 1; j <= 3; j++, day++) {
-                String date = "11.02.0" + day + " 1" + i +":0" + j;
+                String date = "11.02.0" + day + " 1" + i + ":0" + j;
                 subTask = new SubTask(j,
                         "Подзадача " + j + " сложной задачи " + i,
                         NEW,
