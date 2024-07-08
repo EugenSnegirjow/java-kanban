@@ -43,30 +43,30 @@ class HttpTaskServerTest {
 
 
     void createTasks() {
-        task = new Task("Тестовая задача",
+        task = new Task(1, "Тестовая задача",
                 Status.NEW,
                 "Описание тестовой задачи",
                 LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
                 Duration.ofMinutes(15));
-        taskWithIntersection = new Task(2,
+        taskWithIntersection = new Task(1,
                 "Тестовая задача",
                 Status.NEW,
                 "Описание тестовой задачи",
-                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(5),
-                Duration.ofMinutes(15));
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(60),
+                Duration.ofMinutes(45));
         taskWithRightId = new Task(
                 1,
                 "Тестовая задача",
                 Status.IN_PROGRESS,
                 "Описание тестовой задачи",
-                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plus(Duration.ofMinutes(30)),
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(30),
                 Duration.ofMinutes(15));
         taskWithWrongId = new Task(
                 100,
                 "Тестовая задача",
                 Status.IN_PROGRESS,
                 "Описание тестовой задачи",
-                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plus(Duration.ofMinutes(60)),
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(60),
                 Duration.ofMinutes(15));
         manager.create(task);
     }
@@ -100,11 +100,11 @@ class HttpTaskServerTest {
                 Duration.ofMinutes(15),
                 1);
         subTaskWithIntersection = new SubTask(
-                3,
+                2,
                 "Тестовая задача",
                 Status.NEW,
                 "Описание тестовой задачи",
-                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(5),
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(60),
                 Duration.ofMinutes(15),
                 1
         );
@@ -221,6 +221,12 @@ class HttpTaskServerTest {
     @Test
     void tasksPostCreateWithIntersection() throws IOException, InterruptedException {
         createTasks();
+        taskWithIntersection = new Task(1,
+                "Тестовая задача",
+                Status.NEW,
+                "Описание тестовой задачи",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
+                Duration.ofMinutes(45));
         HttpClient client = HttpClient.newHttpClient();
         URI uri = URI.create("http://localhost:8080/api/v1/task-manager/tasks");
         HttpRequest request = HttpRequest.newBuilder()
@@ -271,19 +277,19 @@ class HttpTaskServerTest {
     @Test
     void tasksPostUpdateWithIntersection() throws IOException, InterruptedException {
         createTasks();
-        manager.create(taskWithRightId);
+        manager.create(taskWithWrongId);
 
         HttpClient client = HttpClient.newHttpClient();
-        URI uri = URI.create("http://localhost:8080/api/v1/task-manager/tasks/2");
+        URI uri = URI.create("http://localhost:8080/api/v1/task-manager/tasks/1");
         HttpRequest request = HttpRequest.newBuilder()
-                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task)))
+                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(taskWithIntersection)))
                 .uri(uri)
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         assertEquals(406, response.statusCode(), response.body());
 
-        assertEquals("Задача с началом в " + task.getStartTime() + " уже существует. " +
+        assertEquals("Задача с началом в " + taskWithIntersection.getStartTime() + " уже существует. " +
                         "Не может быть нескольких задач с одинаковым временем начала.",
                 response.body(), "Возвращён неверный ответ: " + response.body());
     }
@@ -538,6 +544,15 @@ class HttpTaskServerTest {
     @Test
     void subtasksPostCreateWithIntersection() throws IOException, InterruptedException {
         createSubTasks();
+        subTaskWithIntersection = new SubTask(
+                2,
+                "Тестовая задача",
+                Status.NEW,
+                "Описание тестовой задачи",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
+                Duration.ofMinutes(15),
+                1
+        );
         HttpClient client = HttpClient.newHttpClient();
         URI uri = URI.create("http://localhost:8080/api/v1/task-manager/subtasks");
         HttpRequest request = HttpRequest.newBuilder()
@@ -588,19 +603,19 @@ class HttpTaskServerTest {
     @Test
     void subtasksPostUpdateWithIntersection() throws IOException, InterruptedException {
         createSubTasks();
-        manager.create(epic.getId(), subTaskWithRightId);
+        manager.create(epic.getId(), subTaskWithWrongId);
 
         HttpClient client = HttpClient.newHttpClient();
         URI uri = URI.create("http://localhost:8080/api/v1/task-manager/subtasks/2");
         HttpRequest request = HttpRequest.newBuilder()
-                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(subTask)))
+                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(subTaskWithIntersection)))
                 .uri(uri)
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         assertEquals(406, response.statusCode(), response.body());
 
-        assertEquals("Задача с началом в " + subTask.getStartTime() + " уже существует. " +
+        assertEquals("Задача с началом в " + subTaskWithIntersection.getStartTime() + " уже существует. " +
                         "Не может быть нескольких задач с одинаковым временем начала.",
                 response.body(), "Возвращён неверный ответ: " + response.body());
     }
