@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 public class HttpTaskServer {
 
-    private final int PORT = 8080;
+    private final int port = 8080;
 
     private final HttpServer httpServer;
     private final Gson gson;
@@ -54,7 +54,7 @@ public class HttpTaskServer {
                 os.write(response.getBytes(StandardCharsets.UTF_8));
             }
         };
-        httpServer = HttpServer.create(new InetSocketAddress(hostName, PORT), 0);
+        httpServer = HttpServer.create(new InetSocketAddress(hostName, port), 0);
         httpServer.createContext("/api/v1/task-manager", this::mangerHandler);
     }
 
@@ -88,14 +88,14 @@ public class HttpTaskServer {
 
     public void start() {
         httpServer.start();
-        System.out.println("Сервер запущен на порту: " + PORT);
-        System.out.println("http://" + hostName + ":" + PORT + "/api/v1/task-manger");
+        System.out.println("Сервер запущен на порту: " + port);
+        System.out.println("http://" + hostName + ":" + port + "/api/v1/task-manger");
     }
 
     public void stop(int delay) throws InterruptedException {
         Thread.sleep(delay);
         httpServer.stop(0);
-        System.out.println("Сервер остановлен на порту: " + PORT);
+        System.out.println("Сервер остановлен на порту: " + port);
 
     }
 }
