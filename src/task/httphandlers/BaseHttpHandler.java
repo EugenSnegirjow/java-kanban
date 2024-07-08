@@ -67,7 +67,7 @@ public abstract class BaseHttpHandler implements HttpHandler {
         exchange.close();
     }
 
-    protected int parsePathId (String pathId) {
+    protected int parsePathId(String pathId) {
         try {
             return Integer.parseInt(pathId);
         } catch (NumberFormatException e) {
