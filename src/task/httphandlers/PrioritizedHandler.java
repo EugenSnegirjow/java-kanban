@@ -12,13 +12,17 @@ public class PrioritizedHandler extends BaseHttpHandler {
     }
 
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        String method = exchange.getRequestMethod();
-        if (method.equals("GET")) {
-            String response = gson.toJson(manager.getPrioritizedTasksAndSubTasks());
-            sendText(exchange, response);
-        } else {
-            sendWrongMethod(exchange);
+    public void handle(HttpExchange exchange) {
+        try {
+            String method = exchange.getRequestMethod();
+            if (method.equals("GET")) {
+                String response = gson.toJson(manager.getPrioritizedTasksAndSubTasks());
+                sendText(exchange, response);
+            } else {
+                sendWrongMethod(exchange);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

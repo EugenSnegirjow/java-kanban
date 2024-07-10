@@ -17,85 +17,89 @@ public class SubtaskHandler extends BaseHttpHandler {
     }
 
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        String path = exchange.getRequestURI().getPath();
-        String method = exchange.getRequestMethod();
+    public void handle(HttpExchange exchange) {
+        try {
+            String path = exchange.getRequestURI().getPath();
+            String method = exchange.getRequestMethod();
 
-        switch (method) {
-            case "GET": {
-                if (Pattern.matches("^/api/v1/task-manager/subtasks$", path)) {
-                    String response = gson.toJson(manager.getAllSubTasks());
-                    sendText(exchange, response);
-                } else if (Pattern.matches("^/api/v1/task-manager/subtasks/\\d+$", path)) {
-                    String pathId = path.replaceFirst("/api/v1/task-manager/subtasks/", "");
-                    int id = parsePathId(pathId);
-                    if (id != -1) {
-                        try {
-                            String response = gson.toJson(manager.getSubTask(id));
-                            sendText(exchange, response);
-                        } catch (NotFoundException e) {
-                            sendNotFound(exchange, e.getMessage());
+            switch (method) {
+                case "GET": {
+                    if (Pattern.matches("^/api/v1/task-manager/subtasks$", path)) {
+                        String response = gson.toJson(manager.getAllSubTasks());
+                        sendText(exchange, response);
+                    } else if (Pattern.matches("^/api/v1/task-manager/subtasks/\\d+$", path)) {
+                        String pathId = path.replaceFirst("/api/v1/task-manager/subtasks/", "");
+                        int id = parsePathId(pathId);
+                        if (id != -1) {
+                            try {
+                                String response = gson.toJson(manager.getSubTask(id));
+                                sendText(exchange, response);
+                            } catch (NotFoundException e) {
+                                sendNotFound(exchange, e.getMessage());
+                            }
+                        } else {
+                            sendBadRequest(exchange, "Id подзадачи указан некорректно");
                         }
                     } else {
-                        sendBadRequest(exchange, "Id подзадачи указан некорректно");
+                        sendBadRequest(exchange, "Id подзадачи не указан");
                     }
-                } else {
-                    sendBadRequest(exchange, "Id подзадачи не указан");
+                    break;
                 }
-                break;
-            }
-            case "POST": {
-                String request = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
-                SubTask task = gson.fromJson(request, SubTask.class);
+                case "POST": {
+                    String request = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+                    SubTask task = gson.fromJson(request, SubTask.class);
 
-                if (Pattern.matches("^/api/v1/task-manager/subtasks$", path)) {
-                    try {
-                        manager.create(task);
-                        String response = "Подзадача успешно добавлена";
-                        sendPostSuccess(exchange, response);
-                    } catch (WrongTaskException e) {
-                        sendHasInteractions(exchange, e.getMessage());
-                    }
-                } else if (Pattern.matches("^/api/v1/task-manager/subtasks/\\d+$", path)) {
-                    String pathId = path.replaceFirst("/api/v1/task-manager/subtasks/", "");
-                    int id = parsePathId(pathId);
-                    if (id != -1) {
+                    if (Pattern.matches("^/api/v1/task-manager/subtasks$", path)) {
                         try {
-                            manager.update(task);
-                            String response = "Подзадача успешно обновлена";
+                            manager.create(task);
+                            String response = "Подзадача успешно добавлена";
                             sendPostSuccess(exchange, response);
-                        } catch (NotFoundException e) {
-                            sendNotFound(exchange, e.getMessage());
                         } catch (WrongTaskException e) {
                             sendHasInteractions(exchange, e.getMessage());
                         }
-                    } else {
-                        sendBadRequest(exchange, "Id подзадачи указан некорректно");
+                    } else if (Pattern.matches("^/api/v1/task-manager/subtasks/\\d+$", path)) {
+                        String pathId = path.replaceFirst("/api/v1/task-manager/subtasks/", "");
+                        int id = parsePathId(pathId);
+                        if (id != -1) {
+                            try {
+                                manager.update(task);
+                                String response = "Подзадача успешно обновлена";
+                                sendPostSuccess(exchange, response);
+                            } catch (NotFoundException e) {
+                                sendNotFound(exchange, e.getMessage());
+                            } catch (WrongTaskException e) {
+                                sendHasInteractions(exchange, e.getMessage());
+                            }
+                        } else {
+                            sendBadRequest(exchange, "Id подзадачи указан некорректно");
+                        }
                     }
+                    break;
                 }
-                break;
-            }
-            case "DELETE": {
-                if (Pattern.matches("^/api/v1/task-manager/subtasks/\\d+$", path)) {
-                    String pathId = path.replaceFirst("/api/v1/task-manager/subtasks/", "");
-                    int id = parsePathId(pathId);
-                    if (id != -1) {
-                        try {
-                            manager.removeSubTask(id);
-                            sendText(exchange, "Подзадача с id " + id + " успешно удалена");
-                        } catch (NotFoundException e) {
-                            sendNotFound(exchange, e.getMessage());
+                case "DELETE": {
+                    if (Pattern.matches("^/api/v1/task-manager/subtasks/\\d+$", path)) {
+                        String pathId = path.replaceFirst("/api/v1/task-manager/subtasks/", "");
+                        int id = parsePathId(pathId);
+                        if (id != -1) {
+                            try {
+                                manager.removeSubTask(id);
+                                sendText(exchange, "Подзадача с id " + id + " успешно удалена");
+                            } catch (NotFoundException e) {
+                                sendNotFound(exchange, e.getMessage());
+                            }
+                        } else {
+                            sendBadRequest(exchange, "Id подзадачи указан некорректно");
                         }
                     } else {
-                        sendBadRequest(exchange, "Id подзадачи указан некорректно");
+                        sendBadRequest(exchange, "Id подзадачи не указан");
                     }
-                } else {
-                    sendBadRequest(exchange, "Id подзадачи не указан");
+                    break;
                 }
-                break;
+                default:
+                    sendWrongMethod(exchange);
             }
-            default:
-                sendWrongMethod(exchange);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
