@@ -6,6 +6,7 @@ import task.manager.enums.TypeOfTasks;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class Task {
@@ -33,17 +34,38 @@ public class Task {
         this.endTime = getEndTime();
     }
 
+    public Task(
+            String title,
+            Status status,
+            String description,
+            LocalDateTime startTime,
+            Duration duration
+    ) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.endTime = getEndTime();
+    }
+
     public Task(int id, String title, Status status, String description) {
         this.title = title;
         this.description = description;
         this.id = id;
         this.status = status;
+        startTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        duration = Duration.ZERO;
+        endTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
     }
 
     public Task(String title, String description) {
         this.status = Status.NEW;
         this.title = title;
         this.description = description;
+        startTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        duration = Duration.ZERO;
+        endTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
     }
 
     public Duration getDuration() {
@@ -55,8 +77,8 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        if (startTime == null || duration == null) return null;
-        return LocalDateTime.from(startTime).plus(duration);
+        if (startTime == null || duration == null) return LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        return LocalDateTime.from(startTime).plus(duration).truncatedTo(ChronoUnit.MINUTES);
     }
 
     public Status getStatus() {
@@ -96,13 +118,21 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && Objects.equals(title, task.title) && Objects.equals(description, task.description);
+        if (startTime == null ^ task.startTime == null) return false;
+        return id == task.id
+                && Objects.equals(title, task.title)
+                && Objects.equals(description, task.description)
+                && Objects.equals(status, task.status)
+                && Objects.equals(startTime, task.startTime)
+                && Objects.equals(endTime, task.endTime)
+                && Objects.equals(duration, task.duration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, description, id);
+        return Objects.hash(title, description, id, status, startTime, endTime, duration);
     }
+
 
     @Override
     public String toString() {

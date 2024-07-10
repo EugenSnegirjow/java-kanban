@@ -76,8 +76,9 @@ public class InMemoryHistoryManager implements HistoryManager {
             node = node.prev;
         }
     }
+
     @Override
-    public void removeHistory (){
+    public void removeHistory() {
         tasksHistory.clear();
         tail = null;
         head = null;

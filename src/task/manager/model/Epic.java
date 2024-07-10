@@ -16,6 +16,8 @@ public class Epic extends Task {
 
     public Epic(int id, String title, Status status, String description, LocalDateTime startTime, Duration duration) {
         super(id, title, status, description, startTime, duration);
+        setEndTime(duration);
+        subTaskIds = new ArrayList<>();
     }
 
     public Epic(int id, String title, Status status, String description) {
@@ -28,8 +30,10 @@ public class Epic extends Task {
         subTaskIds = new ArrayList<>();
     }
 
-/** Все 3 поля зависят друг от друга, если меняется одно, то обязательно меняется одно из других полей, или оба.
- * и все они зависят от сабтасков полей сабтасков */
+    public void setEndTime(Duration duration) {
+        endTime = startTime.plus(duration);
+    }
+
     public void setStartTimeEndTimeAndDuration(LocalDateTime startTime, LocalDateTime endTime, Duration duration) {
         this.startTime = startTime;
         this.endTime = endTime;
@@ -60,11 +64,7 @@ public class Epic extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Epic epic = (Epic) o;
-        return this.id == epic.id
-                && Objects.equals(this.subTaskIds, epic.subTaskIds)
-                && Objects.equals(this.status, epic.status)
-                && Objects.equals(this.description, epic.description)
-                && Objects.equals(this.title, epic.title);
+        return Objects.equals(this.subTaskIds, epic.subTaskIds);
     }
 
     @Override

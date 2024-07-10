@@ -5,6 +5,8 @@ import task.manager.model.Epic;
 import task.manager.model.SubTask;
 import task.manager.model.Task;
 import task.manager.service.Managers;
+import task.manager.service.exception.NotFoundException;
+import task.manager.service.exception.WrongTaskException;
 import task.manager.service.historyManager.HistoryManager;
 
 import java.time.Duration;
@@ -46,30 +48,43 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public Task getTask(Integer taskId) {
-        if (tasks.size() == 0) return null;
+        if (tasks.size() == 0) throw new NotFoundException("Список задач пуст");
+        Task task = tasks.get(taskId);
+        if (task == null) {
+            throw new NotFoundException("Задачи с ID " + taskId + " не существует");
+        }
         managerHistory.add(tasks.get(taskId));
-        return tasks.get(taskId);
+        return task;
     }
 
     public Epic getEpic(Integer taskId) {
-        if (epics.size() == 0) return null;
+        if (epics.size() == 0) throw new NotFoundException("Список эпиков пуст");
+        Epic epic = epics.get(taskId);
+        if (epic == null) {
+            throw new NotFoundException("Эпика с ID " + taskId + " не существует");
+        }
         managerHistory.add(epics.get(taskId));
-        return epics.get(taskId);
+        return epic;
     }
 
     public SubTask getSubTask(Integer taskId) {
-        if (subTasks.size() == 0) return null;
+        if (subTasks.size() == 0) throw new NotFoundException("Список подзадач пуст");
+        SubTask subTask = subTasks.get(taskId);
+        if (subTask == null) {
+            throw new NotFoundException("Подзадачи с ID " + taskId + " не существует");
+        }
         managerHistory.add(subTasks.get(taskId));
-        return subTasks.get(taskId);
+        return subTask;
     }
 
     @Override
     public int create(Task task) {
         task.setId(taskId);
-        if (!sortedTasksAndSubTasks.add(task)) {
-            throw new IllegalArgumentException("Задача с началом в " + task.getStartTime() + " уже существует " +
-                    "Не может быть нескольких задач с одинаковым временем начала.");
+        if (isHasIntersection(task)) {
+            throw new WrongTaskException("Обнаружено пересечение времени выполнения задачи. " +
+                    "Нельзя выполнять несколько задач одновременна. Задача не добавлена");
         }
+        sortedTasksAndSubTasks.add(task);
         sortedTasks.add(task);
         tasks.put(task.getId(), task);
         taskId++;
@@ -88,22 +103,26 @@ public class InMemoryTaskManager implements TaskManager {
     public int create(int epic, SubTask subTask) {
         subTask.setId(taskId);
         subTask.setEpicTaskId(epic);
-        if (!sortedTasksAndSubTasks.add(subTask)) {
-            throw new IllegalArgumentException("Задача с началом в " + subTask.getStartTime() + " уже существует" +
-                    "Не может быть нескольких задач с одинаковым временем начала.");
-        }
 
-        try {
-            sortedSubTasks.add(subTask);
-            subTasks.put(subTask.getId(), subTask);
-            epics.get(epic).addSubTaskId(subTask.getId());
-            updateEpicTime(epics.get(epic));
-            updateEpicStatusForCreateSubTask(epics.get(epic), subTask.getStatus());
-            taskId++;
-            return subTask.getId();
-        } catch (NullPointerException e) {
-            throw new NullPointerException("Эпика с id " + epic + " не существует");
+        if (isHasIntersection(subTask)) {
+            throw new WrongTaskException("Обнаружено пересечение времени выполнения задачи. " +
+                    "Нельзя выполнять несколько задач одновременно. Подзадача не добавлена");
         }
+        sortedTasksAndSubTasks.add(subTask);
+
+        if (!epics.containsKey(epic)) {
+            throw new NotFoundException("Эпика с ID " + epic + " не существует. Подзадача не добавлена");
+        }
+        sortedSubTasks.add(subTask);
+        subTasks.put(subTask.getId(), subTask);
+        if (!epics.get(epic).getSubTaskIds().contains(subTask.getId())) {
+            epics.get(epic).addSubTaskId(subTask.getId());
+        }
+        updateEpicTime(epics.get(epic));
+        updateEpicStatusForCreateSubTask(epics.get(epic), subTask.getStatus());
+        taskId++;
+        return subTask.getId();
+
     }
 
     private void updateEpicStatusForCreateSubTask(Epic epic, Status subTaskStatus) {
@@ -135,29 +154,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Task> getAllTasks() {
-        ArrayList<Task> tasks = new ArrayList<>();
-        for (Integer task : this.tasks.keySet()) {
-            tasks.add(this.tasks.get(task));
-        }
-        return tasks;
+        return new ArrayList<>(tasks.values());
     }
 
     @Override
     public ArrayList<Task> getAllEpics() {
-        ArrayList<Task> tasks = new ArrayList<>();
-        for (Integer task : epics.keySet()) {
-            tasks.add(epics.get(task));
-        }
-        return tasks;
+        return new ArrayList<>(epics.values());
     }
 
     @Override
     public ArrayList<Task> getAllSubTasks() {
-        ArrayList<Task> tasks = new ArrayList<>();
-        for (Integer task : subTasks.keySet()) {
-            tasks.add(subTasks.get(task));
-        }
-        return tasks;
+        return new ArrayList<>(subTasks.values());
     }
 
     @Override
@@ -171,6 +178,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeTask(Integer taskId) {
+        if (!tasks.containsKey(taskId)) {
+            throw new NotFoundException("Задачи с id " + taskId + " не существует. Задача не была удалена");
+        }
         sortedTasks.remove(tasks.get(taskId));
         sortedTasksAndSubTasks.remove(tasks.get(taskId));
         managerHistory.remove(taskId);
@@ -178,25 +188,30 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void removeEpic(Integer taskId) {
-        managerHistory.remove(taskId);
-        for (Integer subTaskId : epics.get(taskId).getSubTaskIds()) {
+    public void removeEpic(Integer epicId) {
+        if (!epics.containsKey(epicId)) {
+            throw new NotFoundException("Эпика с id " + epicId + " не существует. Задача не была удалена");
+        }
+        managerHistory.remove(epicId);
+        ArrayList<Integer> subtasksIdsList = epics.get(epicId).getSubTaskIds();
+        for (Integer subTaskId : subtasksIdsList) {
             managerHistory.remove(subTaskId);
 
-            /** Не понимаю почему задачи не удаляются из TreeMap
-             * Из-за этого не проходит проверку FileBackedTasksManagerTest*/
+            SubTask subTask = subTasks.get(subTaskId);
+            System.out.println(sortedSubTasks.contains(subTask));
+            sortedSubTasks.remove(subTask);
+            sortedTasksAndSubTasks.remove(subTask);
 
-            System.out.println("Список сабтасков до удаления" + sortedSubTasks);
-            sortedSubTasks.remove(subTasks.get(subTaskId));
-            System.out.println("Список сабтасков после удаления" + sortedSubTasks);
-            sortedTasksAndSubTasks.remove(subTasks.get(subTaskId));
             subTasks.remove(subTaskId);
         }
-        epics.remove(taskId);
+        epics.remove(epicId);
     }
 
     @Override
     public void removeSubTask(Integer taskId) {
+        if (!subTasks.containsKey(taskId)) {
+            throw new NotFoundException("Подзадачи с id " + taskId + " не существует. Задача не была удалена");
+        }
         updateEpicTime(epics.get(subTasks.get(taskId).getEpicTaskId()));
         sortedSubTasks.remove(subTasks.get(taskId));
         sortedTasksAndSubTasks.remove(subTasks.get(taskId));
@@ -236,8 +251,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void update(Task task) {
+        if (!tasks.containsKey(task.getId())) {
+            throw new NotFoundException("Задача с id " + task.getId() + " не существует, обновление задачи не выполнено");
+        }
+        Task oldTask = tasks.get(task.getId());
+        sortedTasksAndSubTasks.remove(oldTask);
+        sortedTasks.remove(oldTask);
         if (!sortedTasksAndSubTasks.add(task)) {
-            throw new IllegalArgumentException("Задача с началом в " + task.getStartTime() + " уже существует" +
+            sortedTasksAndSubTasks.add(oldTask);
+            sortedTasks.add(oldTask);
+            throw new WrongTaskException("Задача с началом в " + task.getStartTime() + " уже существует. " +
                     "Не может быть нескольких задач с одинаковым временем начала.");
         }
         sortedTasks.add(task);
@@ -246,6 +269,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void update(Epic newEpic) {
+        if (!epics.containsKey(newEpic.getId())) {
+            throw new NotFoundException("Эпика с id " + newEpic.getId() + " не существует, обновление эпика не выполнено");
+        }
         Epic oldEpic = epics.get(newEpic.getId());
         oldEpic.getSubTaskIds().stream().peek(newEpic::addSubTaskId).close();
         epics.put(newEpic.getId(), newEpic);
@@ -253,11 +279,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void update(SubTask task) {
-        sortedTasksAndSubTasks.remove(subTasks.get(task.getId()));
-        sortedSubTasks.remove(subTasks.get(task.getId()));
+        if (!subTasks.containsKey(task.getId())) {
+            throw new NotFoundException("Подзадачи с id " + task.getId() + " не существует, обновление подзадачи не выполнено");
+        }
+        SubTask oldTask = subTasks.get(task.getId());
+        sortedTasksAndSubTasks.remove(oldTask);
+        sortedSubTasks.remove(oldTask);
 
         if (!sortedTasksAndSubTasks.add(task)) {
-            throw new IllegalArgumentException("Задача с началом в " + task.getStartTime() + " уже существует" +
+            sortedTasksAndSubTasks.add(oldTask);
+            sortedSubTasks.add(oldTask);
+            throw new WrongTaskException("Задача с началом в " + task.getStartTime() + " уже существует. " +
                     "Не может быть нескольких задач с одинаковым временем начала.");
         }
         sortedSubTasks.add(task);
@@ -296,25 +328,13 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
 
-        List<Duration> durationSubtasks = subTaskList.stream()
-                .map(Task::getDuration)
-                .collect(Collectors.toList());
-
-        Duration durationEpic = Duration.ZERO;
-        for (Duration durationSubtask : durationSubtasks) {
-            if (durationSubtask != null) {
-                durationEpic = durationEpic.plus(durationSubtask);
-            }
-        }
-        if (durationEpic.equals(Duration.ZERO)) {
-            durationEpic = null;
-        }
 
         LocalDateTime startTime = null;
         if (subTaskList.get(0).getStartTime() != null) {
             startTime = subTaskList.get(0).getStartTime();
         }
         Optional<SubTask> subtaskWithMaxEndTime = subTaskList.stream()
+                .filter(Objects::nonNull)
                 .max(this::onTimeComparator);
 
         SubTask subTask = subtaskWithMaxEndTime.orElse(null);
@@ -323,6 +343,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (subTask != null) {
             endTime = subTask.getEndTime();
         }
+        Duration durationEpic = Duration.between(startTime, endTime);
 
         epic.setStartTimeEndTimeAndDuration(startTime, endTime, durationEpic);
     }
@@ -331,19 +352,34 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(sortedTasksAndSubTasks);
     }
 
-    private int onTimeComparator(Task task1, Task task2) {
-        if (task1.getStartTime() == null) return -1;
-        else if (task2.getStartTime() == null) return 1;
-        try {
-            if (task1.getStartTime().isEqual(task2.getStartTime())) return 0;
-            if (task1.getStartTime().isBefore(task2.getStartTime())) return 1;
-            if (task1.getStartTime().isAfter(task2.getStartTime())) return -1;
-            else return 0;
-        } catch (NullPointerException e) {
-            return -1;
+    public Boolean isHasIntersection(Task newTask) {
+        if (newTask.getStartTime() == null) return false;
+
+        LocalDateTime start;
+        LocalDateTime end;
+        LocalDateTime startNew = newTask.getStartTime();
+        LocalDateTime endNew = newTask.getEndTime();
+
+        for (Task createdTask : sortedTasksAndSubTasks) {
+            start = createdTask.getStartTime();
+            end = createdTask.getEndTime();
+
+            if (start == null) continue;
+            if ((startNew.isAfter(start) && startNew.isBefore(end))
+                    || endNew.isAfter(start) && endNew.isBefore(end)
+                    || (startNew.isEqual(start) || endNew.isEqual(end)))
+                return true;
         }
+        return false;
     }
 
+    private int onTimeComparator(Task task1, Task task2) {
+        if (task1.getStartTime() == null) return -1;
+        if (task2.getStartTime() == null) return 1;
+        if (task1.getStartTime().isBefore(task2.getStartTime())) return -1;
+        if (task1.getStartTime().isAfter(task2.getStartTime())) return 1;
+        else return 0;
+    }
 
 
     @Override

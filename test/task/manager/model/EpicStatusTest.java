@@ -6,6 +6,10 @@ import org.junit.jupiter.api.Test;
 import task.manager.service.Managers;
 import task.manager.service.taskManager.TaskManager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static task.manager.enums.Status.*;
 
@@ -20,9 +24,12 @@ public class EpicStatusTest {
 
     @BeforeAll
     public static void createSubtasks() {
-        subTaskNEW = new SubTask(2, "Новая подзадача", NEW, "Описание подзадачи", 1);
-        subTaskDONE = new SubTask(3, "Выполненная подзадача", DONE, "Описание подзадачи", 1);
-        subTaskIN_PROGRESS = new SubTask(4, "Подзадача в процессе", IN_PROGRESS, "Описание подзадачи", 1);
+        subTaskNEW = new SubTask(2, "Новая подзадача", NEW, "Описание подзадачи",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(60), Duration.ofMinutes(15), 1);
+        subTaskDONE = new SubTask(3, "Выполненная подзадача", DONE, "Описание подзадачи",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(90), Duration.ofMinutes(15), 1);
+        subTaskIN_PROGRESS = new SubTask(4, "Подзадача в процессе", IN_PROGRESS, "Описание подзадачи",
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(120), Duration.ofMinutes(15), 1);
     }
 
 
@@ -43,6 +50,7 @@ public class EpicStatusTest {
         manager.create(1, subTaskNEW);
         assertEquals(NEW, epic.getStatus());
     }
+
     @Test
     public void getStatusForAllDONESubtaskLst() {
         manager.create(1, subTaskDONE);
