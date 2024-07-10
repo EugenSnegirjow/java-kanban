@@ -67,13 +67,6 @@ public abstract class BaseHttpHandler implements HttpHandler {
         exchange.close();
     }
 
-    protected void sendUnknownError(HttpExchange exchange) throws IOException {
-        byte[] response = "Возникла непредвиденная ошибка".getBytes(StandardCharsets.UTF_8);
-        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        exchange.sendResponseHeaders(500, response.length);
-        exchange.getResponseBody().write(response);
-        exchange.close();
-    }
 
     protected int parsePathId(String pathId) {
         try {
@@ -84,7 +77,7 @@ public abstract class BaseHttpHandler implements HttpHandler {
     }
 
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
+    public void handle(HttpExchange exchange) {
 
     }
 }
